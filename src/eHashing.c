@@ -3,7 +3,7 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
-#include "../include/e_hashing.h"
+#include "../include/eHashing.h"
 
 typedef struct  __attribute__((packed)) StEHashing {
     FILE *file;
