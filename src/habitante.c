@@ -1,3 +1,4 @@
+#include <assert.h>
 #include <stdbool.h>
 #include <string.h>
 
@@ -22,23 +23,27 @@ typedef struct stHabitante {
     endereco_t endereco;
 } habitante_t;
 
-
-habitante_t cria_habitante(const char *cpf, const char *nome,
+habitante_t *habitante_init(const char *cpf, const char *nome,
     const char *sobrenome, const char sexo, const char *data_de_nascimento) {
 
-    habitante_t novo = {0};
+    habitante_t *novo = calloc(1,   sizeof(habitante_t));
+    assert(novo != NULL);
 
+    strncpy(novo -> cpf, cpf, 16);
+    strncpy(novo -> nome, nome, 20);
+    strncpy(novo -> sobrenome, sobrenome, 20);
+    strncpy(novo -> data_nascimento, data_de_nascimento, 12);
 
-    strncpy(novo.cpf, cpf, 16);
-    strncpy(novo.nome, nome, 20);
-    strncpy(novo.sobrenome, sobrenome, 20);
-    strncpy(novo.data_nascimento, data_de_nascimento, 12);
-
-    novo.sexo = sexo;
-    novo.sem_teto = true;
-
+    novo -> sexo = sexo;
+    novo -> sem_teto = true;
 
     return novo;
+}
+
+void habitante_destroy(habitante_t *h) {
+    assert(h != NULL);
+
+    free(h);
 }
 
 void habitante_set_endereco(habitante_t *hab, char *cep, char face, double numero, char *complemento) {
