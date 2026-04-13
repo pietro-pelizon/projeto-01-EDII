@@ -39,9 +39,40 @@ quadra_t *quadra_init(const char *cep, double x, double y, double w, double h) {
 
 }
 
+void quadra_plus_count_side(quadra_t *q, char face) {
+
+    switch (face) {
+        case 'S':
+        case 's': q -> qtd_moradores_S++; break;
+
+        case 'N':
+        case 'n': q -> qtd_moradores_N++; break;
+
+        case 'O':
+        case 'o': q -> qtd_moradores_O++;
+
+        case 'L':
+        case 'l': q -> qtd_moradores_L++;
+
+        default: printf("lado inválido!\n");
+    }
+
+}
+
 void quadra_destroy(quadra_t *q) {
 
     free(q);
+}
+
+void quadra_set_hab_faces(quadra_t *q, int n, int s, int l, int o) {
+    q -> qtd_moradores_N = n;
+    q -> qtd_moradores_S = s;
+    q -> qtd_moradores_L = l;
+    q -> qtd_moradores_O = o;
+}
+
+void quadra_set_cep(quadra_t *q, const char *novo_cep) {
+    strncpy(q -> cep, novo_cep, 16);
 }
 
 void quadra_set_x(quadra_t *q, double novo_x) {
@@ -78,6 +109,55 @@ void quadra_set_sw(quadra_t *q, double novo_sw) {
     q -> sw = novo_sw;
 }
 
+int quadra_get_N(const quadra_t *q) {
+    assert(q != NULL);
+
+    return q -> qtd_moradores_N;
+}
+
+int quadra_get_S(const quadra_t *q) {
+    assert(q != NULL);
+
+    return q -> qtd_moradores_S;
+}
+
+int quadra_get_L(const quadra_t *q) {
+    assert(q != NULL);
+
+    return q -> qtd_moradores_L;
+}
+
+int quadra_get_O(const quadra_t *q) {
+    assert(q != NULL);
+
+    return q -> qtd_moradores_O;
+}
+
+double quadra_get_x(const quadra_t *q) {
+    assert(q != NULL);
+
+    return q -> x;
+}
+
+
+double quadra_get_y(const quadra_t *q) {
+    assert(q != NULL);
+
+    return q -> y;
+}
+
+double quadra_get_w(const quadra_t *q) {
+    assert(q != NULL);
+
+    return q -> w;
+}
+
+double quadra_get_h(const quadra_t *q) {
+    assert(q != NULL);
+
+    return q -> h;
+}
+
 const char *quadra_get_corp(const quadra_t *q) {
     assert(q != NULL);
 
@@ -94,6 +174,12 @@ double quadra_get_sw(const quadra_t *q) {
     assert(q != NULL);
 
     return q -> sw;
+}
+
+const char *quadra_get_cep(const quadra_t *q) {
+    assert(q != NULL);
+
+    return q -> cep;
 }
 
 void quadra_set_cq(quadra_t *q, double sw, const char *corb, const char *corp) {

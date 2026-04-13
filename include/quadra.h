@@ -31,9 +31,27 @@ typedef struct stQuadra quadra_t;
 /// @return Retorna um ponteiro para a quadra alocada dinamicamente (Heap). O usuário DEVE chamar quadra_destroy() após o uso.
 quadra_t *quadra_init(const char *cep, double x, double y, double w, double h);
 
-/// @brief Destrói a quadra, liberando a memória alocada (Evita Memory Leaks).
+/// @brief Incrementa em 1 a contagem de habitantes de uma face específica da quadra.
+/// @param q Ponteiro para a quadra.
+/// @param face Char representando a face (N, S, L ou O).
+void quadra_plus_count_side(quadra_t *q, char face);
+
+/// @brief Define (sobrescreve) a quantidade total de habitantes em cada face da quadra (Usado no comando pq).
+/// @param q Ponteiro para a quadra.
+/// @param n Quantidade de moradores na face norte.
+/// @param s Quantidade de moradores na face sul.
+/// @param l Quantidade de moradores na face leste.
+/// @param o Quantidade de moradores na face oeste.
+void quadra_set_hab_faces(quadra_t *q, int n, int s, int l, int o);
+
+/// @brief Destrói a quadra, liberando a memória alocada.
 /// @param q Ponteiro para a quadra a ser destruída.
 void quadra_destroy(quadra_t *q);
+
+/// @brief Altera o identificador (CEP) da quadra.
+/// @param q Ponteiro para a quadra que será alterada.
+/// @param novo_cep String contendo o novo CEP.
+void quadra_set_cep(quadra_t *q, const char *novo_cep);
 
 /// @brief Define a coordenada X do ponto de ancoragem da quadra.
 /// @param q Ponteiro para a quadra que será alterada.
@@ -70,6 +88,26 @@ void quadra_set_corb(quadra_t *q, const char *nova_corb);
 /// @param novo_sw Novo valor numérico da espessura.
 void quadra_set_sw(quadra_t *q, double novo_sw);
 
+/// @brief Obtém o número de moradores registrados na face norte da quadra.
+/// @param q Ponteiro para a quadra.
+/// @return Quantidade de moradores (int).
+int quadra_get_N(const quadra_t *q);
+
+/// @brief Obtém o número de moradores registrados na face sul da quadra.
+/// @param q Ponteiro para a quadra.
+/// @return Quantidade de moradores (int).
+int quadra_get_S(const quadra_t *q);
+
+/// @brief Obtém o número de moradores registrados na face Leste da quadra.
+/// @param q Ponteiro para a quadra.
+/// @return Quantidade de moradores (int).
+int quadra_get_L(const quadra_t *q);
+
+/// @brief Obtém o número de moradores registrados na face Oeste da quadra.
+/// @param q Ponteiro para a quadra.
+/// @return Quantidade de moradores (int).
+int quadra_get_O(const quadra_t *q);
+
 /// @brief Obtém a cor de preenchimento atual da quadra.
 /// @param q Ponteiro para a quadra.
 /// @return Retorna a string inalterável contendo a cor de preenchimento.
@@ -84,6 +122,31 @@ const char *quadra_get_corb(const quadra_t *q);
 /// @param q Ponteiro para a quadra.
 /// @return Retorna o valor numérico da espessura.
 double quadra_get_sw(const quadra_t *q);
+
+/// @brief Obtém o CEP (identificador único) da quadra.
+/// @param q Ponteiro para a quadra.
+/// @return Retorna a string inalterável contendo o CEP.
+const char *quadra_get_cep(const quadra_t *q);
+
+/// @brief Obtém a coordenada X do ponto de ancoragem da quadra.
+/// @param q Ponteiro para a quadra.
+/// @return Valor da coordenada X.
+double quadra_get_x(const quadra_t *q);
+
+/// @brief Obtém a coordenada Y do ponto de ancoragem da quadra.
+/// @param q Ponteiro para a quadra.
+/// @return Valor da coordenada Y.
+double quadra_get_y(const quadra_t *q);
+
+/// @brief Obtém a largura atual (width) da quadra.
+/// @param q Ponteiro para a quadra.
+/// @return Valor da largura.
+double quadra_get_w(const quadra_t *q);
+
+/// @brief Obtém a altura atual (height) da quadra.
+/// @param q Ponteiro para a quadra.
+/// @return Valor da altura.
+double quadra_get_h(const quadra_t *q);
 
 /// @brief Aplica em lote as propriedades visuais da quadra (Equivalente ao comando 'cq').
 /// @param q Ponteiro para a quadra que será alterada.
