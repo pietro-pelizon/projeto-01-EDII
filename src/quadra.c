@@ -49,12 +49,12 @@ void quadra_plus_count_side(quadra_t *q, char face) {
         case 'n': q -> qtd_moradores_N++; break;
 
         case 'O':
-        case 'o': q -> qtd_moradores_O++;
+        case 'o': q -> qtd_moradores_O++; break;
 
         case 'L':
-        case 'l': q -> qtd_moradores_L++;
+        case 'l': q -> qtd_moradores_L++; break;
 
-        default: printf("lado inválido!\n");
+        default: printf("lado inválido!\n"); break;
     }
 
 }
@@ -182,12 +182,16 @@ const char *quadra_get_cep(const quadra_t *q) {
     return q -> cep;
 }
 
-void quadra_set_cq(quadra_t *q, double sw, const char *corb, const char *corp) {
+void quadra_set_cq(quadra_t *q, double sw, const char *corp, const char *corb) {
     assert(q != NULL);
 
     quadra_set_sw(q, sw);
     quadra_set_corb(q, corb);
     quadra_set_corp(q, corp);
 
+}
+
+size_t quadra_get_size() {
+    return sizeof(quadra_t);
 }
 
