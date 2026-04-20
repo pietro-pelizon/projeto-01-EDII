@@ -1,9 +1,7 @@
 #include <assert.h>
 #include <stdbool.h>
 #include <string.h>
-
-#include "unity_memory.h"
-
+#include <stdlib.h>
 
 typedef struct {
     char cep[16];
@@ -11,6 +9,7 @@ typedef struct {
     double numero;
     char complemento[20];
 } endereco_t;
+
 
 typedef struct stHabitante {
     char cpf[16];
