@@ -27,14 +27,14 @@ typedef struct stFile_header header_t;
 /// @param record_size Tamanho exato em bytes da struct que será guardada (ex: sizeof(Habitante)).
 /// @param bucket_size Tamanho total de cada balde no disco (em bytes).
 /// @return Retorna um ponteiro para o manipulador do Hash Map, ou NULL em caso de erro.
-exhash_t *eHashing_init(const char *filename, uint32_t record_size, uint32_t bucket_size);
+exhash_t *exhash_init(const char *filename, uint32_t record_size, uint32_t bucket_size);
 
 /// @brief Insere um dado no Hash Map.
 /// @param map Ponteiro para o manipulador do Hash Map.
 /// @param data O dado que será inserido (usamos "const void *" para aceitar qualquer struct).
 /// @param key Chave alfanumérica (string) única vinculada ao dado (ex: CPF ou CEP).
 /// @return Retorna true caso a inserção ocorra com sucesso, ou false caso a chave já exista.
-bool eHashing_insert(exhash_t *map, const void *data, const char *key);
+bool exhash_insert(exhash_t *map, const void *data, const char *key);
 
 /// @brief Busca e copia um dado do disco para a memória RAM.
 /// @param map Ponteiro para o manipulador do Hash Map.
@@ -42,18 +42,20 @@ bool eHashing_insert(exhash_t *map, const void *data, const char *key);
 /// @param out_data Buffer pré-alocado pelo usuário (com tamanho mínimo de 'record_size').
 /// Os dados encontrados serão copiados diretamente para este endereço.
 /// @return Retorna true se o dado for encontrado e copiado, ou false caso não exista.
-bool eHashing_search(const exhash_t *map, const char *key, void *out_data);
+bool exhash_search(const exhash_t *map, const char *key, void *out_data);
 
 /// @brief Remove permanentemente um dado do disco e o retorna para a RAM.
 /// @param map Ponteiro para o manipulador do Hash Map.
 /// @param key Chave alfanumérica do dado a ser removido.
 /// @return Retorna um ponteiro alocado com os dados removidos, ou NULL se não encontrar.
 /// @attention O usuário é responsável por liberar (free) essa memória após o uso!
-void *eHashing_remove(exhash_t *map, const char *key);
+void *exhash_remove(const exhash_t *map, const char *key);
+
+void **exhash_get_all(exhash_t *map, uint64_t *out_count);
 
 /// @brief Finaliza as operações, garante o salvamento seguro do diretório no disco e libera a RAM.
 /// @attention Deve ser chamada obrigatoriamente antes do programa encerrar para evitar corrupção de dados.
 /// @param map Ponteiro para o manipulador do Hash Map.
-void eHashing_destroy(exhash_t *map);
+void exhash_destroy(exhash_t *map);
 
 #endif

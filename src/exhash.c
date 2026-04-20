@@ -3,7 +3,9 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
-#include "../include/eHashing.h"
+#include "../include/exhash.h"
+
+
 
 typedef struct  __attribute__((packed)) stExhash {
     FILE *file;
@@ -27,13 +29,13 @@ typedef struct __attribute__((packed)) stFile_header{
 } file_header_t;
 
 // Verifica se uma chave (alfanumérica) já está cadastrada no disco.
-static bool eHashing_contains(const exhash_t *map, const char *key);
+static bool exhash_contains(const exhash_t *map, const char *key);
 
 // Transforma a chave (texto) em um número de 64 bits (identidade digital).
 static uint64_t murmurhash3_64(const void *key, size_t len, uint32_t seed);
 
 // Calcula quantos registros fixos cabem num único balde.
-static uint64_t e_hashfile_capacity(const exhash_t *map);
+static uint64_t exhash_capacity(const exhash_t *map);
 
 // Grava a estrutura inicial de um balde vazio (com zeros) em um offset do disco.
 static void write_empty_bucket(FILE *file, uint32_t bucket_size, uint16_t depth);
@@ -42,10 +44,10 @@ static void write_empty_bucket(FILE *file, uint32_t bucket_size, uint16_t depth)
 static void update_file_header(const exhash_t *map);
 
 // Lê o cabeçalho e reconstrói o mapa do diretório na RAM a partir de um arquivo já existente.
-static void load_existing_hashfile(exhash_t *map);
+static void load_existing_exhash(exhash_t *map);
 
 // Monta a infraestrutura do zero em um arquivo recém-criado (Header + Diretório + 1º Balde).
-static void init_new_hashfile(exhash_t *map);
+static void init_new_exhash(exhash_t *map);
 
 // Escreve fisicamente a chave e o dado na próxima vaga livre de um balde.
 static bool insert_into_bucket(const exhash_t *map, uint64_t offset, bucket_t *b, const void *key, const void *data);
@@ -67,7 +69,7 @@ static void split_bucket(exhash_t *hashfile, uint64_t old_offset, bucket_t old_b
 
 // ============== FUNÇÕES PRINCIPAIS DO MÓDULO ==============
 
-exhash_t *eHashing_init(const char *filename, uint32_t record_size, uint32_t bucket_size) {
+exhash_t *exhash_init(const char *filename, uint32_t record_size, uint32_t bucket_size) {
     exhash_t *map = malloc(sizeof(exhash_t));
     if (!map) return NULL;
 
@@ -80,20 +82,20 @@ exhash_t *eHashing_init(const char *filename, uint32_t record_size, uint32_t buc
 
         if (!map -> file) { free(map); return NULL; }
 
-        init_new_hashfile(map);
+        init_new_exhash(map);
     }
 
     else {
-        load_existing_hashfile(map);
+        load_existing_exhash(map);
     }
 
     return map;
 }
 
-bool eHashing_insert(exhash_t *hashfile, const void *data, const char *key) {
+bool exhash_insert(exhash_t *hashfile, const void *data, const char *key) {
     assert(hashfile != NULL && data != NULL);
 
-    if (eHashing_contains(hashfile, key)) {
+    if (exhash_contains(hashfile, key)) {
         return false;
     }
 
@@ -108,7 +110,7 @@ bool eHashing_insert(exhash_t *hashfile, const void *data, const char *key) {
         fread(&directory_header, sizeof(bucket_t), 1, hashfile -> file);
 
 
-        if (directory_header.record_count < e_hashfile_capacity(hashfile)) {
+        if (directory_header.record_count < exhash_capacity(hashfile)) {
             return insert_into_bucket(hashfile, offset, &directory_header, key, data);
         }
 
@@ -121,7 +123,7 @@ bool eHashing_insert(exhash_t *hashfile, const void *data, const char *key) {
     }
 }
 
-bool eHashing_search(const exhash_t *map, const char *key, void *out_data) {
+bool exhash_search(const exhash_t *map, const char *key, void *out_data) {
     assert(map != NULL && key != NULL && out_data != NULL);
 
     uint64_t hashed_key = murmurhash3_64(key, strlen(key), 0);
@@ -138,16 +140,12 @@ bool eHashing_search(const exhash_t *map, const char *key, void *out_data) {
     for (uint16_t i = 0; i < header.record_count; i++) {
         uint64_t slot_key;
 
-        // CORREÇÃO: Mudei para long para não corromper em arquivos grandes
         uint64_t slot_offset = (long)offset + sizeof(bucket_t) + (i * slot_size);
 
         fseek(map -> file, (long)slot_offset, SEEK_SET);
         fread(&slot_key, sizeof(uint64_t), 1, map -> file);
 
-        // 2. Compara os hashes
         if (slot_key == hashed_key) {
-            // Leu a chave e bateu? O ponteiro do disco já está exatamente
-            // no início do bloco de dados! É só dar o fread no out_data.
             fread(out_data, map -> record_size, 1, map -> file);
             return true;
         }
@@ -156,11 +154,118 @@ bool eHashing_search(const exhash_t *map, const char *key, void *out_data) {
     return false;
 }
 
-void *eHashing_remove(exhash_t *map, const char *key) {
+void *exhash_remove(const exhash_t *map, const char *key) {
+    if (map == NULL || key == NULL) return NULL;
+
+    uint64_t hashed_key = murmurhash3_64(key, strlen(key), 0);
+    uint64_t idx = hashed_key & ((1 << map -> global_depth) - 1);
+    uint64_t offset = map -> directory[idx];
+
+    bucket_t header;
+    fseek(map -> file, (long)offset, SEEK_SET);
+    fread(&header, sizeof(bucket_t), 1, map -> file);
+
+    uint64_t slot_size = sizeof(uint64_t) + map -> record_size;
+
+    for (uint16_t i = 0; i < header.record_count; i++) {
+        uint64_t slot_key;
+        uint64_t slot_offset = offset + sizeof(bucket_t) + (i * slot_size);
+
+        fseek(map -> file, (long)slot_offset, SEEK_SET);
+        fread(&slot_key, sizeof(uint64_t), 1, map -> file);
+
+        if (slot_key == hashed_key) {
+
+            void *removed_data = malloc(map -> record_size);
+            fread(removed_data, map->record_size, 1, map -> file);
+
+            if (i < header.record_count - 1) {
+                uint64_t last_slot_offset = offset + sizeof(bucket_t) + ((header.record_count - 1) * slot_size);
+
+                uint64_t last_key;
+                void *last_data = malloc(map->record_size);
+
+                fseek(map->file, (long)last_slot_offset, SEEK_SET);
+                fread(&last_key, sizeof(uint64_t), 1, map -> file);
+                fread(last_data, map->record_size, 1, map -> file);
+
+                fseek(map->file, (long)slot_offset, SEEK_SET);
+                fwrite(&last_key, sizeof(uint64_t), 1, map -> file);
+                fwrite(last_data, map -> record_size, 1, map -> file);
+
+                free(last_data);
+            }
+
+            header.record_count--;
+            fseek(map -> file, (long)offset, SEEK_SET);
+            fwrite(&header, sizeof(bucket_t), 1, map->file);
+
+            return removed_data;
+        }
+    }
+
+    printf("Dado não encontrado no hashfile!\n");
     return NULL;
 }
 
-void eHashing_destroy(exhash_t *map) {
+void **exhash_get_all(exhash_t *map, uint64_t *out_count) {
+    if (map == NULL || out_count == NULL) return NULL;
+
+    // Prepara um array dinâmico na RAM para guardar os resultados
+    uint64_t capacidade = 128; // Começa com espaço para 128 registros
+    void **resultados = malloc(capacidade * sizeof(void *));
+    uint64_t total_encontrados = 0;
+
+    // Array para lembrar quais baldes já visitamos (Deduplicação)
+    uint64_t tamanho_diretorio = 1 << map -> global_depth;
+    uint64_t *baldes_visitados = malloc(tamanho_diretorio * sizeof(uint64_t));
+    uint64_t qtd_visitados = 0;
+
+    // Varre o diretório inteiro
+    for (uint64_t i = 0; i < tamanho_diretorio; i++) {
+        uint64_t offset_atual = map -> directory[i];
+
+        // 1. Verifica se já lemos esse balde físico antes
+        bool ja_visitado = false;
+        for (uint64_t v = 0; v < qtd_visitados; v++) {
+            if (baldes_visitados[v] == offset_atual) {
+                ja_visitado = true;
+                break;
+            }
+        }
+
+        if (ja_visitado) continue;
+
+        baldes_visitados[qtd_visitados++] = offset_atual;
+
+        bucket_t header;
+        fseek(map -> file, (long)offset_atual, SEEK_SET);
+        fread(&header, sizeof(bucket_t), 1, map -> file);
+
+        uint64_t slot_size = sizeof(uint64_t) + map -> record_size;
+
+        for (uint16_t j = 0; j < header.record_count; j++) {
+            uint64_t slot_offset = offset_atual + sizeof(bucket_t) + (j * slot_size) + sizeof(uint64_t);
+
+            void *registro = malloc(map->record_size);
+            fseek(map -> file, (long)slot_offset, SEEK_SET);
+            fread(registro, map -> record_size, 1, map->file);
+
+            if (total_encontrados == capacidade) {
+                capacidade *= 2;
+                resultados = realloc(resultados, capacidade * sizeof(void *));
+            }
+
+            resultados[total_encontrados++] = registro;
+        }
+    }
+
+    free(baldes_visitados);
+    *out_count = total_encontrados;
+    return resultados;
+}
+
+void exhash_destroy(exhash_t *map) {
     if (map == NULL) return;
 
     // Prepara o cabeçalho para salvar
@@ -225,7 +330,7 @@ static uint64_t murmurhash3_64(const void *key, size_t len, const uint32_t seed)
     return h;
 }
 
-static uint64_t e_hashfile_capacity(const exhash_t *map) {
+static uint64_t exhash_capacity(const exhash_t *map) {
 
     uint64_t C = map -> bucket_size - sizeof(bucket_t);
     uint64_t Q = sizeof(uint64_t) + map -> record_size;
@@ -255,7 +360,7 @@ static void update_file_header(const exhash_t *map) {
     fwrite(&header, sizeof(file_header_t), 1, map -> file);
 }
 
-static void load_existing_hashfile(exhash_t *map) {
+static void load_existing_exhash(exhash_t *map) {
     file_header_t header;
     fseek(map -> file, 0, SEEK_SET);
     fread(&header, sizeof(file_header_t), 1, map -> file);
@@ -272,7 +377,7 @@ static void load_existing_hashfile(exhash_t *map) {
     fread(map -> directory, sizeof(uint64_t), num_entries, map -> file);
 }
 
-static void init_new_hashfile(exhash_t *map) {
+static void init_new_exhash(exhash_t *map) {
     map -> global_depth = 0;
     map -> directory = malloc(sizeof(uint64_t) * 1);
 
@@ -288,23 +393,24 @@ static void init_new_hashfile(exhash_t *map) {
     write_empty_bucket(map -> file, map -> bucket_size, 0);
 }
 
-static bool insert_into_bucket(const exhash_t *map, uint64_t offset, bucket_t *b, const void *key, const void *data) {
-    uint64_t numeric_key = murmurhash3_64(key, strlen(key), 0);
-
+static bool insert_raw_into_bucket(const exhash_t *map, uint64_t offset, bucket_t *b, uint64_t numeric_key, const void *data) {
     uint64_t slot_offset = offset + sizeof(bucket_t) +
-                       (b -> record_count * (sizeof(uint64_t) + map -> record_size));
+                           (b->record_count * (sizeof(uint64_t) + map->record_size));
 
-    // 3. Pula pro slot e grava
-    fseek(map -> file, (long)slot_offset, SEEK_SET);
-    fwrite(&numeric_key, sizeof(uint64_t), 1, map -> file);
-    fwrite(data, map -> record_size, 1, map -> file);
+    fseek(map->file, (long)slot_offset, SEEK_SET);
+    fwrite(&numeric_key, sizeof(uint64_t), 1, map->file);
+    fwrite(data, map->record_size, 1, map->file);
 
-    // 4. Atualiza a prancheta do guarda no disco
-    b -> record_count++;
-    fseek(map -> file, (long)offset, SEEK_SET);
+    b->record_count++;
+    fseek(map->file, (long)offset, SEEK_SET);
     fwrite(b, sizeof(bucket_t), 1, map->file);
 
     return true;
+}
+
+static bool insert_into_bucket(const exhash_t *map, uint64_t offset, bucket_t *b, const void *key, const void *data) {
+    uint64_t numeric_key = murmurhash3_64(key, strlen((const char *)key), 0);
+    return insert_raw_into_bucket(map, offset, b, numeric_key, data);
 }
 
 static uint64_t get_directory_index(const exhash_t *hashfile, const char *key) {
@@ -316,7 +422,6 @@ static uint64_t get_directory_index(const exhash_t *hashfile, const char *key) {
 
 static bool expand_directory(exhash_t *hashfile) {
 
-    // Dobramos a capacidade do diretório
     uint32_t old_size = 1 << hashfile -> global_depth;
     uint32_t new_size = old_size * 2;
 
@@ -324,7 +429,6 @@ static bool expand_directory(exhash_t *hashfile) {
     assert(new_directory != NULL);
     hashfile -> directory = new_directory;
 
-    // Espelhamos os apontadores do diretório (001 e 101 apontam para o mesmo endereço)
     for (uint32_t i = 0; i < old_size; i++) {
         hashfile -> directory[i + old_size] = hashfile -> directory[i];
     }
@@ -345,32 +449,28 @@ static bool expand_directory(exhash_t *hashfile) {
 }
 
 static void redistribute_records(const exhash_t *hashfile, uint64_t old_offset, uint64_t new_offset, bucket_t *old_bucket, bucket_t *new_bucket, uint32_t old_count) {
-    void *temp_data = malloc(hashfile -> record_size);
+    void *temp_data = malloc(hashfile->record_size);
     assert(temp_data != NULL);
 
     for (uint32_t i = 0; i < old_count; i++) {
         uint64_t saved_key;
+        uint64_t slot_offset = old_offset + sizeof(bucket_t) + (i * (sizeof(uint64_t) + hashfile->record_size));
 
-        uint64_t slot_offset = old_offset + sizeof(bucket_t) + (i * (sizeof(uint64_t) + hashfile -> record_size));
-
-        fseek(hashfile -> file, (long)slot_offset, SEEK_SET);
+        fseek(hashfile->file, (long)slot_offset, SEEK_SET);
         fread(&saved_key, sizeof(uint64_t), 1, hashfile->file);
         fread(temp_data, hashfile->record_size, 1, hashfile->file);
 
-        uint64_t hashed_key = murmurhash3_64(&saved_key, sizeof(uint64_t), 0);
-        uint32_t bit = (hashed_key >> (old_bucket -> local_depth - 1)) & 1;
+        uint32_t bit = (saved_key >> (old_bucket->local_depth - 1)) & 1;
 
         if (bit == 0) {
-            insert_into_bucket(hashfile, old_offset, old_bucket, &saved_key, temp_data);
-        }
-
-        else {
-            insert_into_bucket(hashfile, new_offset, new_bucket, &saved_key, temp_data);
+            insert_raw_into_bucket(hashfile, old_offset, old_bucket, saved_key, temp_data);
+        } else {
+            insert_raw_into_bucket(hashfile, new_offset, new_bucket, saved_key, temp_data);
         }
     }
-
     free(temp_data);
 }
+
 
 static void update_directory_pointers(const exhash_t *hashfile, uint64_t old_offset, uint64_t new_offset, uint8_t depth) {
     uint32_t dir_size = 1 << hashfile -> global_depth;
@@ -403,7 +503,7 @@ static void split_bucket(exhash_t *hashfile, uint64_t old_offset, bucket_t old_b
     update_directory_pointers(hashfile, old_offset, new_offset, old_bucket.local_depth);
 }
 
-static bool eHashing_contains(const exhash_t *map, const char *key) {
+static bool exhash_contains(const exhash_t *map, const char *key) {
     assert(map != NULL && key != NULL);
 
     uint64_t hashed_key = murmurhash3_64(key, strlen(key), 0);
