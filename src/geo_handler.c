@@ -12,7 +12,7 @@ static void processa_comando_cq(const char *linha_lida, double *sw_atual, char *
 }
 
 static void processa_comando_q(const char *linha_lida, exhash_t *mapa_quadras,
-                        double sw_atual, const char *corb_atual, const char *corp_atual) {
+                        double sw_atual, const char *corp_atual, const char *corb_atual) {
     char cep[16];
     double x, y, w, h;
 
@@ -21,7 +21,7 @@ static void processa_comando_q(const char *linha_lida, exhash_t *mapa_quadras,
     quadra_t *nova_quadra = quadra_init(cep, x, y, w, h);
     if (nova_quadra == NULL) return;
 
-    quadra_set_cq(nova_quadra, sw_atual, corb_atual, corp_atual);
+    quadra_set_cq(nova_quadra, sw_atual, corp_atual, corb_atual);
 
     if (!exhash_insert(mapa_quadras, nova_quadra, cep)) {
         printf("Aviso: Quadra CEP %s ignorada (ja existe).\n", cep);
@@ -50,7 +50,7 @@ void geo_processar_arquivo(const char *caminho_arquivo, exhash_t *mapa_quadras) 
             processa_comando_cq(linha, &espessura_borda, cor_preenchimento, cor_borda);
         }
         else if (strcmp(comando, "q") == 0) {
-            processa_comando_q(linha, mapa_quadras, espessura_borda, cor_borda, cor_preenchimento);
+            processa_comando_q(linha, mapa_quadras, espessura_borda, cor_preenchimento, cor_borda);
         }
     }
 
