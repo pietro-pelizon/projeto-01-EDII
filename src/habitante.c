@@ -23,6 +23,9 @@ typedef struct stHabitante {
 } habitante_t;
 
 
+size_t habitante_get_size() {
+    return sizeof(habitante_t);
+}
 
 habitante_t *habitante_init(const char *cpf, const char *nome,
     const char *sobrenome, const char sexo, const char *data_de_nascimento) {
