@@ -2,12 +2,11 @@
 #include "habitante.h"
 
 #include <assert.h>
-#include <stddef.h>
 #include <stdio.h>
 #include <string.h>
 
 #include "quadra.h"
-#include "unity_memory.h"
+#include <stdlib.h>
 
 static void processa_comando_p(exhash_t *map, const char *linha_lida) {
     char cpf[16], nome[20], sobrenome[20], data_nascimento[12];
@@ -37,21 +36,22 @@ static void processa_comando_m(exhash_t *mapa_quadras, exhash_t *mapa_habitantes
     sscanf(linha_lida, "%*s %15s %15s %c %lf %19[^\n]", cpf, cep, &face, &num, complemento);
 
     habitante_t *morador = (habitante_t *) exhash_remove(mapa_habitantes, cpf);
-    quadra_t *quadra_buscada = NULL;
+    quadra_t *quadra_buscada = malloc(quadra_get_size());
 
-    if (!exhash_search(mapa_quadras, cep, &quadra_buscada)) {
+    if (!exhash_search(mapa_quadras, cep, quadra_buscada)) {
+        free(quadra_buscada);
         return;
     }
 
     if (morador != NULL) {
         habitante_set_endereco(morador, cep, face, num, complemento);
-
         exhash_insert(mapa_habitantes, morador, cpf);
 
+        exhash_remove(mapa_quadras, cep);
         quadra_plus_count_side(quadra_buscada, face);
+        exhash_insert(mapa_quadras, quadra_buscada, cep);
 
         habitante_destroy(morador);
-
 
         printf("Morador CPF %s mudou-se para o CEP %s!\n", cpf, cep);
     }
@@ -59,6 +59,8 @@ static void processa_comando_m(exhash_t *mapa_quadras, exhash_t *mapa_habitantes
     else {
         printf("Aviso: Comando 'm' falhou. CPF %s não encontrado no banco.\n", cpf);
     }
+
+    free(quadra_buscada);
 }
 
 void pm_processa_arquivo(const char *caminho_arquivo, exhash_t *mapa_habitantes, exhash_t *mapa_quadras) {
