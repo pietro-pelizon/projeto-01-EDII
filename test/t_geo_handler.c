@@ -6,7 +6,7 @@
 #include "exhash.h"
 #include "quadra.h"
 
-exhash_t    *mapa_teste         = NULL;
+exhash_t *mapa_teste = NULL;
 const char  *ARQUIVO_TESTE_TEMP = "c1_mini_teste.geo";
 
 void setUp(void) {
@@ -32,7 +32,7 @@ void tearDown(void) {
 }
 
 void t_geo_handler_deve_ler_arquivo_e_inserir_no_hash(void) {
-    geo_processar_arquivo(ARQUIVO_TESTE_TEMP, mapa_teste);
+    processa_geo(ARQUIVO_TESTE_TEMP, mapa_teste);
 
     quadra_t *q1 = malloc(quadra_get_size());
     quadra_t *q2 = malloc(quadra_get_size());

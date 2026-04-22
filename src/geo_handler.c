@@ -7,7 +7,6 @@
 #include "geo_handler.h"
 
 static void processa_comando_cq(const char *linha_lida, double *sw_atual, char *corp_atual, char *corb_atual) {
-    // Lemos da linha e gravamos direto no endereço de memória das variáveis do laço
     sscanf(linha_lida, "%*s %lf %19s %19s", sw_atual, corp_atual, corb_atual);
 }
 
@@ -30,10 +29,10 @@ static void processa_comando_q(const char *linha_lida, exhash_t *mapa_quadras,
     quadra_destroy(nova_quadra);
 }
 
-void geo_processar_arquivo(const char *caminho_arquivo, exhash_t *mapa_quadras) {
-    FILE *arquivo = fopen(caminho_arquivo, "r");
-    if (!arquivo) {
-        printf("Erro ao abrir %s\n", caminho_arquivo);
+void processa_geo(const char *caminho_geo, exhash_t *mapa_quadras) {
+    FILE *arquivo_geo = fopen(caminho_geo, "r");
+    if (!arquivo_geo) {
+        printf("Erro ao abrir %s\n", caminho_geo);
         return;
     }
 
@@ -41,18 +40,20 @@ void geo_processar_arquivo(const char *caminho_arquivo, exhash_t *mapa_quadras) 
     char cor_borda[20] = "black";
     double espessura_borda = 1.0;
 
-    char linha[256];
-    while (fgets(linha, sizeof(linha), arquivo)) {
+    char linha_leitura[256];
+
+    while (fgets(linha_leitura, sizeof(linha_leitura), arquivo_geo)) {
+
         char comando[3];
-        sscanf(linha, "%2s", comando);
+        sscanf(linha_leitura, "%2s", comando);
 
         if (strcmp(comando, "cq") == 0) {
-            processa_comando_cq(linha, &espessura_borda, cor_preenchimento, cor_borda);
+            processa_comando_cq(linha_leitura, &espessura_borda, cor_preenchimento, cor_borda);
         }
         else if (strcmp(comando, "q") == 0) {
-            processa_comando_q(linha, mapa_quadras, espessura_borda, cor_preenchimento, cor_borda);
+            processa_comando_q(linha_leitura, mapa_quadras, espessura_borda, cor_preenchimento, cor_borda);
         }
     }
 
-    fclose(arquivo);
+    fclose(arquivo_geo);
 }
