@@ -36,6 +36,11 @@ quadra_t *quadra_init(const char *cep, double x, double y, double w, double h);
 /// @param face Char representando a face (N, S, L ou O).
 void quadra_plus_count_side(quadra_t *q, char face);
 
+/// @brief Diminui o número total de habitantes da respectiva face em 1
+/// @param q Ponteiro para a quadra
+/// @param face Face a ter seu número de habitantes decrementada
+void quadra_minus_count_side(quadra_t *q, char face);
+
 /// @brief Define (sobrescreve) a quantidade total de habitantes em cada face da quadra (Usado no comando pq).
 /// @param q Ponteiro para a quadra.
 /// @param n Quantidade de moradores na face norte.
@@ -153,6 +158,9 @@ double quadra_get_h(const quadra_t *q);
 /// @param sw Espessura da borda (stroke width).
 /// @param corb Cor da borda (cstrk).
 /// @param corp Cor de preenchimento (cfill).
-void quadra_set_cq(quadra_t *q, double sw, const char *corb, const char *corp);
+void quadra_set_cq(quadra_t *q, double sw, const char *corp,  const char *corb);
+
+/// @return Retorna o tamanho em bytes da estrutura quadra
+size_t quadra_get_size();
 
 #endif //PROJETO_01_EDII_QUADRA_H

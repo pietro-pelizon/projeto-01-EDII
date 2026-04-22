@@ -11,7 +11,7 @@
 #include <stdlib.h>
 
 
-typedef struct stQuadra {
+typedef struct __attribute__((packed)) stQuadra {
     char cep[16];
     char corb[16];
     char corp[16];
@@ -53,6 +53,25 @@ void quadra_plus_count_side(quadra_t *q, char face) {
 
         case 'L':
         case 'l': q -> qtd_moradores_L++; break;
+
+        default: printf("lado inválido!\n"); break;
+    }
+}
+
+void quadra_minus_count_side(quadra_t *q, char face) {
+
+    switch (face) {
+        case 'S':
+        case 's': q -> qtd_moradores_S--; break;
+
+        case 'N':
+        case 'n': q -> qtd_moradores_N--; break;
+
+        case 'O':
+        case 'o': q -> qtd_moradores_O--; break;
+
+        case 'L':
+        case 'l': q -> qtd_moradores_L--; break;
 
         default: printf("lado inválido!\n"); break;
     }
