@@ -2,23 +2,23 @@
 #include <stdbool.h>
 #include <string.h>
 #include <stdlib.h>
+#include <stdio.h>
 
-typedef struct {
+typedef struct __attribute__((packed)) stEndereco {
     char cep[16];
     char face;
     double numero;
     char complemento[20];
-} endereco_t;
+}  __attribute__((packed)) endereco_t;
 
 
-typedef struct stHabitante {
+typedef struct __attribute__((packed)) stHabitante {
     char cpf[16];
     char nome[20];
     char sobrenome[20];
     char sexo;
     char data_nascimento[12];
     bool sem_teto;
-
     endereco_t endereco;
 } habitante_t;
 
@@ -57,7 +57,6 @@ void habitante_set_endereco(habitante_t *hab, char *cep, char face, double numer
 
     hab -> endereco.face = face;
     hab -> endereco.numero = numero;
-    hab -> sem_teto = false;
 }
 
 // ==========================================
@@ -181,4 +180,23 @@ double habitante_get_numero_casa(const habitante_t *hab) {
 const char* habitante_get_complemento(const habitante_t *hab) {
     if (hab == NULL || hab -> sem_teto) return NULL;
     return hab -> endereco.complemento;
+}
+
+// ==========================================
+// FUNÇÕES UTILITÁRIAS
+// ==========================================
+
+void habitante_print_info(FILE *txt, const habitante_t *h) {
+    fprintf(txt, "CPF: %s", habitante_get_cpf(h));
+    fprintf(txt, "Nome: %s\n", habitante_get_nome(h));
+    fprintf(txt, "Sobrenome: %s\n", habitante_get_sobrenome(h));
+    fprintf(txt, "Sexo: %c", habitante_get_sexo(h));
+    fprintf(txt, "Data de nascimento:  %s", habitante_get_data_nascimento(h));
+}
+
+void habitante_endereco_print_info(FILE *txt, const habitante_t *h) {
+    fprintf(txt, "CEP: %s\n", habitante_get_cep(h));
+    fprintf(txt, "Face: %c\n", habitante_get_face(h));
+    fprintf(txt, "Número da casa: %.2lf\n", habitante_get_numero_casa(h));
+    fprintf(txt, "Complemento: %s\n", habitante_get_complemento(h));
 }
