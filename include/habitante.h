@@ -2,6 +2,8 @@
 #define PROJETO_01_EDII_HABITANTE_H
 
 #include <stdbool.h>
+#include <stddef.h>
+#include <stdio.h>
 
 /* O módulo a seguir define a entidade Habitante e seu Endereço (casa)
  * para o Sistema de Informações Geográficas (SIG) de Bitnópolis.
@@ -24,6 +26,8 @@
 
 typedef struct stHabitante habitante_t;
 typedef struct stEndereco endereco_t;
+
+size_t habitante_get_size();
 
 /// @brief Cria e inicializa um novo habitante alocado dinamicamente (Heap). Por padrão, nasce como sem-teto.
 /// @param cpf String com o CPF do habitante (Chave principal).
@@ -146,5 +150,16 @@ double habitante_get_numero_casa(const habitante_t *hab);
 /// @param hab Ponteiro constante para o habitante.
 /// @return String inalterável com o complemento, ou NULL se for sem-teto.
 const char *habitante_get_complemento(const habitante_t *hab);
+
+/// @brief Insere em um arquivo de texto, as informações gerais (nome, cpf, etc) de um habitante.
+/// @param txt Ponteiro para o arquivo.
+/// @param h Ponteiro para o habitante.
+void habitante_print_info(FILE *txt, const habitante_t *h);
+
+/// @brief Função auxiliar que insere em um arquivo de texto, as
+/// informações do endereço de um determinado habitante, já formatadas.
+/// @param txt Ponteiro para o arquivo.
+/// @param h Ponteiro para o habitante.
+void habitante_endereco_print_info(FILE *txt, const habitante_t *h);
 
 #endif //PROJETO_01_EDII_HABITANTE_H
