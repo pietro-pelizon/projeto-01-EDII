@@ -45,6 +45,8 @@ static void processa_comando_m(exhash_t *mapa_quadras, exhash_t *mapa_habitantes
 
     if (morador != NULL) {
         habitante_set_endereco(morador, cep, face, num, complemento);
+        habitante_set_sem_teto(morador, false);
+
         exhash_insert(mapa_habitantes, morador, cpf);
 
         exhash_remove(mapa_quadras, cep);
