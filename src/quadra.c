@@ -83,11 +83,11 @@ void quadra_destroy(quadra_t *q) {
     free(q);
 }
 
-void quadra_set_hab_faces(quadra_t *q, int n, int s, int l, int o) {
-    q -> qtd_moradores_N = n;
-    q -> qtd_moradores_S = s;
-    q -> qtd_moradores_L = l;
-    q -> qtd_moradores_O = o;
+void quadra_set_hab_faces(quadra_t *q, int *n, int *s, int *l, int *o) {
+    q -> qtd_moradores_N = *n;
+    q -> qtd_moradores_S = *s;
+    q -> qtd_moradores_L = *l;
+    q -> qtd_moradores_O = *o;
 }
 
 void quadra_set_cep(quadra_t *q, const char *novo_cep) {
