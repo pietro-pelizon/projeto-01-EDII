@@ -187,11 +187,11 @@ const char* habitante_get_complemento(const habitante_t *hab) {
 // ==========================================
 
 void habitante_print_info(FILE *txt, const habitante_t *h) {
-    fprintf(txt, "CPF: %s", habitante_get_cpf(h));
+    fprintf(txt, "CPF: %s\n", habitante_get_cpf(h));
     fprintf(txt, "Nome: %s\n", habitante_get_nome(h));
     fprintf(txt, "Sobrenome: %s\n", habitante_get_sobrenome(h));
-    fprintf(txt, "Sexo: %c", habitante_get_sexo(h));
-    fprintf(txt, "Data de nascimento:  %s", habitante_get_data_nascimento(h));
+    fprintf(txt, "Sexo: %c\n", habitante_get_sexo(h));
+    fprintf(txt, "Data de nascimento:  %s\n", habitante_get_data_nascimento(h));
 }
 
 void habitante_endereco_print_info(FILE *txt, const habitante_t *h) {
