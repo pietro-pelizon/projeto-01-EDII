@@ -49,7 +49,11 @@ static void processa_comando_m(exhash_t *mapa_quadras, exhash_t *mapa_habitantes
 
         exhash_insert(mapa_habitantes, morador, cpf);
 
-        exhash_remove(mapa_quadras, cep);
+        quadra_t *quadra_velha = exhash_remove(mapa_quadras, cep);
+        if (quadra_velha != NULL) {
+            quadra_destroy(quadra_velha);
+        }
+
         quadra_plus_count_side(quadra_buscada, face);
         exhash_insert(mapa_quadras, quadra_buscada, cep);
 
@@ -65,13 +69,16 @@ static void processa_comando_m(exhash_t *mapa_quadras, exhash_t *mapa_habitantes
     free(quadra_buscada);
 }
 
-void pm_processa_arquivo(const char *caminho_arquivo, exhash_t *mapa_habitantes, exhash_t *mapa_quadras) {
+exhash_t *pm_processa_arquivo(const char *caminho_arquivo, exhash_t *mapa_quadras) {
+
+    exhash_t *mapa_habitantes = exhash_init("hashfile_habitantes.hf", habitante_get_size(), 4096);
+
     assert(mapa_habitantes != NULL);
 
     FILE *pm = fopen(caminho_arquivo, "r");
     if (pm == NULL) {
         printf("Aviso: Erro ao abrir o arquivo .pm\n");
-        return;
+        return NULL;
     }
 
     char linha[256];
@@ -91,4 +98,6 @@ void pm_processa_arquivo(const char *caminho_arquivo, exhash_t *mapa_habitantes,
     }
 
     fclose(pm);
+
+    return mapa_habitantes;
 }
