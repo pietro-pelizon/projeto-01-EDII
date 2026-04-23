@@ -29,12 +29,14 @@ static void processa_comando_q(const char *linha_lida, exhash_t *mapa_quadras,
     quadra_destroy(nova_quadra);
 }
 
-void processa_geo(const char *caminho_geo, exhash_t *mapa_quadras) {
+exhash_t *processa_geo(const char *caminho_geo) {
     FILE *arquivo_geo = fopen(caminho_geo, "r");
     if (!arquivo_geo) {
         printf("Erro ao abrir %s\n", caminho_geo);
-        return;
+        return NULL;
     }
+
+    exhash_t *mapa_quadras = exhash_init("hashfile_quadras", quadra_get_size(), 4096);
 
     char cor_preenchimento[20] = "white";
     char cor_borda[20] = "black";
@@ -56,4 +58,6 @@ void processa_geo(const char *caminho_geo, exhash_t *mapa_quadras) {
     }
 
     fclose(arquivo_geo);
+
+    return mapa_quadras;
 }
