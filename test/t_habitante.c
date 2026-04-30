@@ -1,6 +1,8 @@
 #include <stddef.h>
 #include <stdbool.h>
-#include "../unity/Unity/src/unity.h"
+
+#include "unity.h"
+#include "unity_internals.h"
 #include "../include/habitante.h"
 
 habitante_t *h = NULL;
@@ -47,6 +49,7 @@ void t_habitante_setters_pessoais_devem_atualizar_dados() {
 
 void t_habitante_set_endereco_deve_atualizar_dados_e_remover_sem_teto() {
     habitante_set_endereco(h, "cep15", 'S', 45.5, "Apto 2");
+    habitante_set_sem_teto(h, false);
 
     TEST_ASSERT_EQUAL_STRING("cep15", habitante_get_cep(h));
     TEST_ASSERT_EQUAL_CHAR('S', habitante_get_face(h));
@@ -58,6 +61,7 @@ void t_habitante_set_endereco_deve_atualizar_dados_e_remover_sem_teto() {
 
 void t_habitante_set_sem_teto_deve_funcionar() {
     habitante_set_endereco(h, "cep15", 'S', 45.5, "");
+    habitante_set_sem_teto(h, false);
     TEST_ASSERT_FALSE(habitante_is_sem_teto(h));
 
     // Desaloja ele
