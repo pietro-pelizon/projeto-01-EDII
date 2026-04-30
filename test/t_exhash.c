@@ -5,8 +5,8 @@
 #include <stdbool.h>
 #include <stdlib.h>
 #include <string.h>
-
-#include "../unity/Unity/src/unity.h"
+#include "unity.h"
+#include "unity_internals.h"
 #include "../include/exhash.h"
 
 exhash_t *map = NULL;

@@ -1,7 +1,8 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
-#include "../unity/Unity/src/unity.h"
+#include "unity.h"
+#include "unity_internals.h"
 #include "geo_handler.h"
 #include "exhash.h"
 #include "quadra.h"
@@ -32,7 +33,7 @@ void tearDown(void) {
 }
 
 void t_geo_handler_deve_ler_arquivo_e_inserir_no_hash(void) {
-    processa_geo(ARQUIVO_TESTE_TEMP, mapa_teste);
+    mapa_teste = processa_geo(ARQUIVO_TESTE_TEMP);
 
     quadra_t *q1 = malloc(quadra_get_size());
     quadra_t *q2 = malloc(quadra_get_size());

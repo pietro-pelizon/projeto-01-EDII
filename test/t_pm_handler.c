@@ -6,7 +6,9 @@
 #include "geo_handler.h"
 #include "habitante.h"
 #include "pm_handler.h"
-#include "../unity/Unity/src/unity.h"
+
+#include "unity_internals.h"
+#include "unity.h"
 
 
 exhash_t *mapa_teste_hab = NULL;
@@ -15,7 +17,6 @@ const char *arquivo_teste_hab = "arquivo_teste.pm";
 const char *arquivo_teste_quadra = "arquivo_teste.geo";
 
 void setUp(void) {
-    mapa_teste_quadras = exhash_init("teste_quadras.hf", quadra_get_size(), 4096);
 
     FILE *f1 = fopen(arquivo_teste_quadra, "w");
     if (f1 != NULL) {
@@ -27,10 +28,7 @@ void setUp(void) {
         fclose(f1);
     }
 
-    geo_processar_arquivo(arquivo_teste_quadra, mapa_teste_quadras);
-
-
-    mapa_teste_hab = exhash_init("teste_habitantes.hf", habitante_get_size(), 4096);
+     mapa_teste_quadras = processa_geo(arquivo_teste_quadra);
 
     FILE *f2 = fopen(arquivo_teste_hab, "w");
     if (f2 == NULL) return;
@@ -52,15 +50,15 @@ void tearDown(void) {
 
     remove(arquivo_teste_hab);
     remove(arquivo_teste_quadra);
-    remove("teste_habitantes.hf");
-    remove("teste_quadras.hf");
+    remove("hashfile_habitantes.hf");
+    remove("hashfile_quadras.hf");
 }
 
 void test_ler_arquivo_e_modificar_habitante() {
-    pm_processa_arquivo(arquivo_teste_hab, mapa_teste_hab, mapa_teste_quadras);
+    mapa_teste_hab= pm_processa_arquivo(arquivo_teste_hab, mapa_teste_quadras);
 
-    habitante_t *hab1 = malloc(habitante_get_size());
-    habitante_t *hab2 = malloc(habitante_get_size());
+    habitante_t *hab1 = calloc(1, habitante_get_size());
+    habitante_t *hab2 = calloc(1, habitante_get_size());
 
     bool achou1 = exhash_search(mapa_teste_hab, "000.000.001-91", hab1);
     TEST_ASSERT_TRUE_MESSAGE(achou1, "CPF 000.000.001-91 deve estar no hashfile");
@@ -85,6 +83,9 @@ void test_ler_arquivo_e_modificar_habitante() {
     TEST_ASSERT_EQUAL_INT(20, habitante_get_numero_casa(hab2));
     TEST_ASSERT_EQUAL_STRING("ap-1176", habitante_get_complemento(hab2));
     TEST_ASSERT_FALSE(habitante_is_sem_teto(hab2));
+
+    free(hab1);
+    free(hab2);
 }
 
 
