@@ -43,12 +43,13 @@ habitante_t *habitante_init(const char *cpf, const char *nome,
 /// @param h Ponteiro para o habitante a ser destruído.
 void habitante_destroy(habitante_t *h);
 
-/// @brief Atualiza todos os dados de moradia de uma vez. Automaticamente tira o status de sem-teto.
+/// @brief Atualiza todos os dados de moradia de uma vez.
 /// @param hab Ponteiro para o habitante que será atualizado.
 /// @param cep CEP da quadra onde a casa está localizada.
 /// @param face Face da quadra ('N', 'S', 'L' ou 'O').
 /// @param numero Distância (número) da casa na face da quadra.
 /// @param complemento Complemento do endereço (ex: "Apto 42").
+/// @warning Não remove condição de sem-teto!
 void habitante_set_endereco(habitante_t *hab, char *cep, char face, double numero, char *complemento);
 
 /// @brief Atualiza o CPF do habitante.
@@ -76,7 +77,7 @@ void habitante_set_sexo(habitante_t *hab, char sexo);
 /// @param data Nova data de nascimento.
 void habitante_set_data_nascimento(habitante_t *hab, const char *data);
 
-/// @brief Força a mudança do status de moradia (sem-teto).
+/// @brief Força a mudança da condição de moradia (sem-teto).
 /// @param hab Ponteiro para o habitante.
 /// @param status True para sem-teto, false se possuir moradia.
 void habitante_set_sem_teto(habitante_t *hab, bool status);

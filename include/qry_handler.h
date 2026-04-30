@@ -1,7 +1,11 @@
 #ifndef PROJETO_01_EDII_QRY_HANDLER_H
 #define PROJETO_01_EDII_QRY_HANDLER_H
 
-/**
+#include "../include/qry_handler.h"
+#include <stdio.h>
+#include "exhash.h"
+
+/*
  * @file qry_handler.h
  * @brief Módulo processador de consultas e eventos interativos.
  *
@@ -14,10 +18,6 @@
  * marcações visuais (cruzes, círculos, etc.) ao mapa da cidade (.svg).
  */
 
-
-#include "../include/qry_handler.h"
-#include <stdio.h>
-#include "exhash.h"
 
 /// @brief Lê o arquivo (.qry), o traduz para o código do programa e executa as funções necessárias
 /// @param caminho_qry Path para o arquivo (.qry) a ser lido

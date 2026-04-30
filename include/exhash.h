@@ -51,6 +51,15 @@ bool exhash_search(const exhash_t *map, const char *key, void *out_data);
 /// @attention O usuário é responsável por liberar (free) essa memória após o uso!
 void *exhash_remove(const exhash_t *map, const char *key);
 
+/// @brief Traz todos os dados do respectivo mapa (disco) para a memória RAM.
+/// Retorna um array contendo cópias de todos os registros armazenados,
+/// permitindo a análise completa e execução de ações em lote.
+/// @param map Ponteiro para a estrutura do banco de dados (exhash_t) de onde os dados serão lidos.
+/// @param out_count Ponteiro para uma variável (uint64_t) que será preenchida com o número total de registros encontrados.
+/// @return Um array dinâmico de ponteiros (void **), onde cada posição aponta para um registro lido. Retorna NULL em caso de mapa vazio ou falha.
+/// @warning O array retornado e os registros dentro dele são alocados dinamicamente.
+/// É responsabilidade de quem chamou a função iterar sobre o array dando `free`
+/// em cada elemento e, por fim, dar `free` no próprio array retornado.
 void **exhash_get_all(exhash_t *map, uint64_t *out_count);
 
 /// @brief Finaliza as operações, garante o salvamento seguro do diretório no disco e libera a RAM.
