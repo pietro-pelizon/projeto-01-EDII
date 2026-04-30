@@ -47,7 +47,7 @@ void quadra_minus_count_side(quadra_t *q, char face);
 /// @param s Quantidade de moradores na face sul.
 /// @param l Quantidade de moradores na face leste.
 /// @param o Quantidade de moradores na face oeste.
-void quadra_set_hab_faces(quadra_t *q, int n, int s, int l, int o);
+void quadra_set_hab_faces(quadra_t *q, int *n, int *s, int *l, int *o);
 
 /// @brief Destrói a quadra, liberando a memória alocada.
 /// @param q Ponteiro para a quadra a ser destruída.
