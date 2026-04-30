@@ -6,10 +6,13 @@
 
 #include "geo_handler.h"
 
-static void processa_comando_cq(const char *linha_lida, double *sw_atual, char *corp_atual, char *corb_atual) {
-    sscanf(linha_lida, "%*s %lf %19s %19s", sw_atual, corp_atual, corb_atual);
+
+// se lê 'cq', preenche as variáveis corretas de espessura, cor de preenchimento e cor de borda
+static void processa_comando_cq(const char *linha_lida, char *sw_atual, char *corp_atual, char *corb_atual) {
+    sscanf(linha_lida, "%*s %19s %19s %19s", sw_atual, corp_atual, corb_atual);
 }
 
+// se lê 'q', adiciona nova quadra com determinados atributos ao seu respectivo hashfile.hf
 static void processa_comando_q(const char *linha_lida, exhash_t *mapa_quadras,
                         double sw_atual, const char *corp_atual, const char *corb_atual) {
     char cep[16];
@@ -29,6 +32,7 @@ static void processa_comando_q(const char *linha_lida, exhash_t *mapa_quadras,
     quadra_destroy(nova_quadra);
 }
 
+// função principal que processa todo o arquivo (.geo) e retorna seu hashfile.hf preenchido
 exhash_t *processa_geo(const char *caminho_geo) {
     FILE *arquivo_geo = fopen(caminho_geo, "r");
     if (!arquivo_geo) {
@@ -36,11 +40,11 @@ exhash_t *processa_geo(const char *caminho_geo) {
         return NULL;
     }
 
-    exhash_t *mapa_quadras = exhash_init("hashfile_quadras", quadra_get_size(), 4096);
+    exhash_t *mapa_quadras = exhash_init("hashfile_quadras.hf", quadra_get_size(), 4096);
 
     char cor_preenchimento[20] = "white";
     char cor_borda[20] = "black";
-    double espessura_borda = 1.0;
+    char espessura_borda[20] = "1.0px";
 
     char linha_leitura[256];
 
@@ -50,10 +54,11 @@ exhash_t *processa_geo(const char *caminho_geo) {
         sscanf(linha_leitura, "%2s", comando);
 
         if (strcmp(comando, "cq") == 0) {
-            processa_comando_cq(linha_leitura, &espessura_borda, cor_preenchimento, cor_borda);
+            processa_comando_cq(linha_leitura, espessura_borda, cor_preenchimento, cor_borda);
         }
         else if (strcmp(comando, "q") == 0) {
-            processa_comando_q(linha_leitura, mapa_quadras, espessura_borda, cor_preenchimento, cor_borda);
+            double sw = atof(espessura_borda);
+            processa_comando_q(linha_leitura, mapa_quadras, sw, cor_preenchimento, cor_borda);
         }
     }
 
