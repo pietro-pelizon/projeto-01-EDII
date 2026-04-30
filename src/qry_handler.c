@@ -33,7 +33,9 @@ static void full_table_scan_rq(exhash_t *mapa_pessoas, FILE *txt, const char *ce
                     habitante_get_cpf(hab), habitante_get_nome(hab));
 
             void *lixo = exhash_remove(mapa_pessoas, habitante_get_cpf(hab));
-            free(lixo);
+            if (lixo) {
+                habitante_destroy(hab);
+            }
 
             habitante_set_endereco(hab, "", '\0', 0.0, "");
             habitante_set_sem_teto(hab, true);
@@ -41,7 +43,10 @@ static void full_table_scan_rq(exhash_t *mapa_pessoas, FILE *txt, const char *ce
             exhash_insert(mapa_pessoas, hab, habitante_get_cpf(hab));
         }
 
-        habitante_destroy(hab);
+        else {
+            habitante_destroy(hab);
+        }
+
     }
 
     free(habitantes_gerais);
@@ -92,10 +97,10 @@ static void full_table_scan_pq(exhash_t *mapa_pessoas, const char *cep, int *n, 
 
             if (cep_morador != NULL && strcmp(cep_morador, cep) == 0) {
                 char face = habitante_get_face(hab);
-                if (face == 'N') *n++;
-                else if (face == 'S') *s++;
-                else if (face == 'L') *l++;
-                else if (face == 'O') *o++;
+                if (face == 'N') (*n)++;
+                else if (face == 'S') (*s)++;
+                else if (face == 'L') (*l)++;
+                else if (face == 'O') (*o)++;
             }
             habitante_destroy(hab);
         }
@@ -124,11 +129,11 @@ static void comando_pq(const char *linha_lida, exhash_t *mapa_pessoas, exhash_t 
         return;
     }
 
-    int *n =0, *s = 0, *l = 0, *o = 0;
+    int n =0, s = 0, l = 0, o = 0;
 
-    full_table_scan_pq(mapa_pessoas, cep, n, s, l, o);
+    full_table_scan_pq(mapa_pessoas, cep, &n, &s, &l, &o);
 
-    quadra_set_hab_faces(quadra_procurada, n, s, l, o);
+    quadra_set_hab_faces(quadra_procurada, &n, &s, &l, &o);
 
     svg_escrever_populacao_pq(svg, quadra_procurada);
 
