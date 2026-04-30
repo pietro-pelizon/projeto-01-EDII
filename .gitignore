@@ -7,8 +7,19 @@
 *.gitattributes
 *.editorconfig
 *.md
+*.hf
+*.svg
+*.sh
+*.hfd
+*.EXE
+*.bin
+ted
 
-/unity/.github
+
+
+build
+testes-t1
+/unity/Unity/.github
 /unity/auto
 /unity/docs
 /unity/examples
