@@ -1,7 +1,8 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
-#include "../unity/Unity/src/unity.h"
+#include "unity_internals.h"
+#include "unity.h"
 #include "../include/quadra.h"
 
 void setUp(void) {}
@@ -184,7 +185,10 @@ void test_plus_count_side_nao_afeta_outros_lados(void) {
 
 void test_set_hab_faces_define_todos_os_lados(void) {
     quadra_t *q = quadra_init("c", 0, 0, 0, 0);
-    quadra_set_hab_faces(q, 10, 20, 30, 40);
+
+    int n = 10, s = 20, l = 30, o = 40;
+
+    quadra_set_hab_faces(q, &n, &s, &l, &o);
     TEST_ASSERT_EQUAL_INT(10, quadra_get_N(q));
     TEST_ASSERT_EQUAL_INT(20, quadra_get_S(q));
     TEST_ASSERT_EQUAL_INT(30, quadra_get_L(q));
@@ -196,7 +200,9 @@ void test_set_hab_faces_sobrescreve_contadores_anteriores(void) {
     quadra_t *q = quadra_init("c", 0, 0, 0, 0);
     quadra_plus_count_side(q, 'N');
     quadra_plus_count_side(q, 'N');
-    quadra_set_hab_faces(q, 5, 0, 0, 0);
+
+    int n = 5, s = 0, l = 0, o = 0;
+    quadra_set_hab_faces(q, &n, &s, &l, &o);
     TEST_ASSERT_EQUAL_INT(5, quadra_get_N(q));
     quadra_destroy(q);
 }
