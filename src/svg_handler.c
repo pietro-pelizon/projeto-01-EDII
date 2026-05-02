@@ -13,7 +13,7 @@ FILE *svg_init(const char* caminho_arquivo) {
 	}
 
 	fprintf(svg, "<?xml version=\"1.0\" encoding=\"UTF-8\" standalone=\"no\"?>\n");
-	fprintf(svg, "<svg xmlns:svg=\"http://www.w3.org/2000/svg\" xmlns=\"http://www.w3.org/2000/svg\" width=\"10000\" height=\"10000\">\n");
+	fprintf(svg, "<svg xmlns:svg=\"http://www.w3.org/2000/svg\" xmlns=\"http://www.w3.org/2000/svg\" width=\"15000\" height=\"15000\">\n");
 
 	fprintf(svg, "<g>\n");
 
@@ -31,6 +31,11 @@ void svg_quadra_insert(FILE *svg, const quadra_t *q) {
 		quadra_get_corb(q),
 		quadra_get_corp(q),
 		quadra_get_sw(q), 0.5);
+
+	fprintf(svg, "\t<text x=\"%lf\" y=\"%lf\" font-family=\"Arial\" font-size=\"12\" fill=\"black\">%s</text>\n",
+		quadra_get_x(q),
+		quadra_get_y(q) - 2.0,
+		quadra_get_cep(q));
 }
 
 void fecha_svg(FILE *svg) {
@@ -88,17 +93,18 @@ void svg_escrever_populacao_pq(FILE *svg, quadra_t *quadra) {
 }
 
 void svg_cruz_insert(FILE *svg, double cx, double cy) {
-	fprintf(svg, "\t<line x1=\"%lf\" y1=\"%lf\" x2=\"%lf\" y2=\"%lf\" stroke=\"red\" stroke-width=\"6\" stroke-linecap=\"round\"/>\n",
-		cx - 20.0, cy,       cx + 20.0, cy);
-	fprintf(svg, "\t<line x1=\"%lf\" y1=\"%lf\" x2=\"%lf\" y2=\"%lf\" stroke=\"red\" stroke-width=\"6\" stroke-linecap=\"round\"/>\n",
-		cx, cy - 20.0, cx, cy + 20.0);
+	fprintf(svg, "\t<line x1=\"%lf\" y1=\"%lf\" x2=\"%lf\" y2=\"%lf\" stroke=\"red\" stroke-width=\"2\" stroke-linecap=\"round\"/>\n",
+		cx - 12.0, cy,       cx + 12.0, cy);
+	fprintf(svg, "\t<line x1=\"%lf\" y1=\"%lf\" x2=\"%lf\" y2=\"%lf\" stroke=\"red\" stroke-width=\"2\" stroke-linecap=\"round\"/>\n",
+		cx, cy - 10.0, cx, cy + 15.0);
 }
 
 void svg_marcador_mudanca(FILE *svg, double cx, double cy, const char *cpf) {
-	fprintf(svg, "\t<rect x=\"%lf\" y=\"%lf\" width=\"30\" height=\"15\""
-		"stroke=\"red\" fill=\"red\" stroke-width=\"1\"/>\n", cx - 15.0, cy - 7.5);
-	fprintf(svg, "\t<text x=\"%lf\" y=\"%lf\"font-size=\"6\" font-style=\"italic\" fill=\"white\"text-anchor=\"middle\" "
-		 "dominant-baseline=\"middle\">%s</text>\n", cx, cy, cpf);
+    fprintf(svg, "\t<rect x=\"%lf\" y=\"%lf\" width=\"30.0\" height=\"15.0\" stroke=\"black\" fill=\"red\" opacity=\"0.5\" stroke-width=\"1\"/>\n",
+            cx - 15.0, cy - 7.5);
+
+    fprintf(svg, "\t<text x=\"%lf\" y=\"%lf\" font-size=\"3.5\" font-style=\"italic\" fill=\"white\" text-anchor=\"middle\" dominant-baseline=\"middle\">%s</text>\n",
+            cx, cy, cpf);
 }
 
 void svg_circulo_despejo(FILE *svg, double cx, double cy) {
