@@ -114,8 +114,10 @@ static void comando_rq(const char *linha_lida, exhash_t *mapa_pessoas, exhash_t 
 
     double x_quadra = quadra_get_x(quadra_removida);
     double y_quadra = quadra_get_y(quadra_removida);
+    double w_quadra = quadra_get_w(quadra_removida);
+    double h_quadra = quadra_get_h(quadra_removida);
 
-    svg_x_vermelho(svg, x_quadra, y_quadra);
+    svg_x_vermelho(svg, x_quadra, y_quadra, w_quadra, h_quadra);
 
     quadra_destroy(quadra_removida);
 

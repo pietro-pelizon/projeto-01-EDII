@@ -48,14 +48,12 @@ void fecha_svg(FILE *svg) {
 	fclose(svg);
 }
 
-void svg_x_vermelho(FILE *svg, double x, double y) {
-	double tamanho = 5.0;
+void svg_x_vermelho(FILE *svg, double x, double y, double w, double h) {
+	fprintf(svg, "\t<line x1=\"%lf\" y1=\"%lf\" x2=\"%lf\" y2=\"%lf\" stroke=\"red\" stroke-width=\"3\" />\n",
+			x, y, x + w, y + h);
 
-	fprintf(svg, "<line x1=\"%.2f\" y1=\"%.2f\" x2=\"%.2f\" y2=\"%.2f\" stroke=\"red\" stroke-width=\"2\" />\n",
-			x - tamanho, y - tamanho, x + tamanho, y + tamanho);
-
-	fprintf(svg, "<line x1=\"%.2f\" y1=\"%.2f\" x2=\"%.2f\" y2=\"%.2f\" stroke=\"red\" stroke-width=\"2\" />\n",
-			x - tamanho, y + tamanho, x + tamanho, y - tamanho);
+	fprintf(svg, "\t<line x1=\"%lf\" y1=\"%lf\" x2=\"%lf\" y2=\"%lf\" stroke=\"red\" stroke-width=\"3\" />\n",
+			x, y + h, x + w, y);
 }
 
 void svg_escrever_populacao_pq(FILE *svg, quadra_t *quadra) {
