@@ -17,9 +17,7 @@ static void processa_comando_p(exhash_t *map, const char *linha_lida) {
     habitante_t *novo = habitante_init(cpf, nome, sobrenome, sexo, data_nascimento);
     if (novo == NULL) return;
 
-    if (!exhash_insert(map, novo, cpf)) {
-        printf("Habitante CPF %s nao inserido! (Ja existe no banco)\n", habitante_get_cpf(novo));
-    }
+    exhash_insert(map, novo, cpf);
 
     habitante_destroy(novo);
 }
@@ -59,7 +57,6 @@ static void processa_comando_m(exhash_t *mapa_quadras, exhash_t *mapa_habitantes
 
         habitante_destroy(morador);
 
-        printf("Morador CPF %s mudou-se para o CEP %s!\n", cpf, cep);
     }
 
     else {

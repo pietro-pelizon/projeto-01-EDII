@@ -107,7 +107,6 @@ static void comando_rq(const char *linha_lida, exhash_t *mapa_pessoas, exhash_t 
 
     quadra_t *quadra_removida = exhash_remove(mapa_quadras, cep);
     if (quadra_removida == NULL) {
-        printf("Aviso: quadra de CEP %s não encontrada pra remoção no comando rq\n", cep);
         fprintf(txt, "Quadra não encontrada!\n");
         return;
     }
@@ -145,7 +144,7 @@ static void comando_pq(const char *linha_lida, exhash_t *mapa_pessoas, exhash_t 
     quadra_t* quadra_procurada = malloc(quadra_get_size());
 
     if (!exhash_search(mapa_quadras, cep, quadra_procurada)) {
-        fprintf(txt, "Quadra nao encontrada.\n\n");
+        fprintf(txt, "Quadra não encontrada.\n\n");
         free(quadra_procurada);
         return;
     }
@@ -169,7 +168,7 @@ static void comando_censo(exhash_t *mapa_pessoas, FILE *txt) {
     censo_stats_t stats = {0};
 
     if (!calcular_estatisticas_censo(mapa_pessoas, &stats)) {
-        fprintf(txt, "A cidade esta vazia. Nao ha dados para o censo.\n\n");
+        fprintf(txt, "A cidade esta vazia.\n\n");
         return;
     }
 
@@ -222,13 +221,8 @@ static void comando_nasc(const char *linha_lida, exhash_t *mapa_pessoas, FILE *t
 
     fprintf(txt, "[*] nasc %s\n\n", habitante_get_cpf(recem_nascido));
 
-    bool inserido = exhash_insert(mapa_pessoas, recem_nascido, cpf);
-    if (!inserido) {
-        printf("Aviso: Falha no nascimento. O CPF %s ja existe no banco de dados!\n", cpf);
-    } else {
-        printf("Bem-vindo a Bitnopolis, %s %s!\n", nome, sobrenome);
-    }
 
+    exhash_insert(mapa_pessoas, recem_nascido, cpf);
     habitante_destroy(recem_nascido);
 }
 
@@ -242,7 +236,7 @@ static void comando_rip(const char *linha_lida, exhash_t *mapa_quadras, exhash_t
 
     habitante_t *falecido = exhash_remove(mapa_pessoas, cpf);
     if (falecido == NULL) {
-        printf("Habitante com CPF de número %s não encontrado no hashfile!\n", cpf);
+        fprintf(txt, "Habitante com CPF de número %s não encontrado no hashfile!\n", cpf);
         return;
     }
 
@@ -265,7 +259,6 @@ static void comando_mud(const char *linha_lida, exhash_t *mapa_quadras, exhash_t
 
     habitante_t *hab_mudanca = exhash_remove(mapa_pessoas, cpf);
     if (hab_mudanca == NULL) {
-        printf("ERRO: Habitante de cpf %s não encontrado no hashfile!\n", cpf);
         return;
     }
 
@@ -323,7 +316,6 @@ static void comando_dspj(const char *linha_lida, exhash_t *mapa_pessoas, exhash_
 
     quadra_t *quadra_despejo = exhash_remove(mapa_quadras, cep);
     if (quadra_despejo == NULL) {
-        printf("ERRO: Quadra de CEP %s não encontrada no hashfile!\n", cep);
         exhash_insert(mapa_pessoas, despejado, cpf);
         habitante_destroy(despejado);
         return;
@@ -471,7 +463,6 @@ static bool calcular_estatisticas_censo(exhash_t *mapa_pessoas, censo_stats_t *s
 }
 
 static void imprimir_relatorio_censo(FILE *txt, const censo_stats_t *stats) {
-    // Cast para (double) para evitar o Narrowing Conversion do uint64_t e divisao correta
     double prop_moradores = ((double)stats->moradores / (double)stats->total_habitantes);
 
     double perc_hab_homens = ((double)stats->homens / (double)stats->total_habitantes) * 100.0;
