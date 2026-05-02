@@ -25,9 +25,7 @@ static void processa_comando_q(const char *linha_lida, exhash_t *mapa_quadras,
 
     quadra_set_cq(nova_quadra, sw_atual, corp_atual, corb_atual);
 
-    if (!exhash_insert(mapa_quadras, nova_quadra, cep)) {
-        printf("Aviso: Quadra CEP %s ignorada (ja existe).\n", cep);
-    }
+    exhash_insert(mapa_quadras, nova_quadra, cep);
 
     quadra_destroy(nova_quadra);
 }
