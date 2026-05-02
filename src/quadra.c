@@ -15,7 +15,8 @@ typedef struct __attribute__((packed)) stQuadra {
     char cep[16];
     char corb[16];
     char corp[16];
-    double x, y, w, h, sw;
+    char sw[12];
+    double x, y, w, h;
 
     int qtd_moradores_N;
     int qtd_moradores_S;
@@ -122,10 +123,11 @@ void quadra_set_corb(quadra_t *q, const char *nova_corb) {
     strncpy(q -> corb, nova_corb, 16);
 }
 
-void quadra_set_sw(quadra_t *q, double novo_sw) {
+void quadra_set_sw(quadra_t *q, const char *novo_sw) {
     assert(q != NULL);
 
-    q -> sw = novo_sw;
+    strncpy(q->sw, novo_sw, sizeof(q->sw) - 1);
+    q -> sw[sizeof(q -> sw) - 1] = '\0';
 }
 
 int quadra_get_N(const quadra_t *q) {
@@ -189,7 +191,7 @@ const char *quadra_get_corb(const quadra_t *q) {
     return q -> corb;
 }
 
-double quadra_get_sw(const quadra_t *q) {
+const char *quadra_get_sw(const quadra_t *q) {
     assert(q != NULL);
 
     return q -> sw;
@@ -201,7 +203,7 @@ const char *quadra_get_cep(const quadra_t *q) {
     return q -> cep;
 }
 
-void quadra_set_cq(quadra_t *q, double sw, const char *corp, const char *corb) {
+void quadra_set_cq(quadra_t *q, char *sw, const char *corp, const char *corb) {
     assert(q != NULL);
 
     quadra_set_sw(q, sw);

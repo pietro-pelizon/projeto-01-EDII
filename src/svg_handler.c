@@ -22,7 +22,7 @@ FILE *svg_init(const char* caminho_arquivo) {
 
 
 void svg_quadra_insert(FILE *svg, const quadra_t *q) {
-	fprintf(svg, "\t<rect id=\"%s\" x=\"%lf\" y=\"%lf\" width=\"%lf\" height=\"%lf\" stroke=\"%s\" fill=\"%s\" stroke-width=\"%lf\" opacity=\"%lf\" />\n",
+	fprintf(svg, "\t<rect id=\"%s\" x=\"%lf\" y=\"%lf\" width=\"%lf\" height=\"%lf\" stroke=\"%s\" fill=\"%s\" stroke-width=\"%s\" opacity=\"%lf\" />\n",
 		quadra_get_cep(q),
 		quadra_get_x(q),
 		quadra_get_y(q),

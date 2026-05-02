@@ -117,7 +117,7 @@ void test_svg_quadra_insert_escreve_rect(void) {
     FILE *svg = svg_init(ARQ_SVG);
 
     quadra_t *q = quadra_init("cep1", 10.0, 20.0, 100.0, 50.0);
-    quadra_set_cq(q, 2.0, "orange", "black");
+    quadra_set_cq(q, "2.0px", "orange", "black");
     svg_quadra_insert(svg, q);
     quadra_destroy(q);
 
@@ -133,7 +133,7 @@ void test_svg_quadra_insert_contem_coordenadas(void) {
     FILE *svg = svg_init(ARQ_SVG);
 
     quadra_t *q = quadra_init("cep2", 55.0, 77.0, 80.0, 40.0);
-    quadra_set_cq(q, 1.0, "white", "blue");
+    quadra_set_cq(q, "1.0px", "white", "blue");
     svg_quadra_insert(svg, q);
     quadra_destroy(q);
 
@@ -151,7 +151,7 @@ void test_svg_quadra_insert_contem_cores(void) {
     FILE *svg = svg_init(ARQ_SVG);
 
     quadra_t *q = quadra_init("cepX", 0, 0, 10, 10);
-    quadra_set_cq(q, 1.5, "red", "green");
+    quadra_set_cq(q, "1.5px", "red", "green");
     svg_quadra_insert(svg, q);
     quadra_destroy(q);
 
@@ -169,7 +169,7 @@ void test_svg_quadra_insert_contem_cores(void) {
 
 void test_svg_x_vermelho_escreve_duas_linhas(void) {
     FILE *svg = svg_init(ARQ_SVG);
-    svg_x_vermelho(svg, 100.0, 200.0);
+    svg_x_vermelho(svg, 100.0, 200.0, 80.0, 40.0);
     fecha_svg(svg);
 
     char *buf = le_arquivo(ARQ_SVG);
@@ -183,7 +183,7 @@ void test_svg_x_vermelho_escreve_duas_linhas(void) {
 
 void test_svg_x_vermelho_cor_vermelha(void) {
     FILE *svg = svg_init(ARQ_SVG);
-    svg_x_vermelho(svg, 50.0, 50.0);
+    svg_x_vermelho(svg, 50.0, 50.0, 50.0, 50.0);
     fecha_svg(svg);
 
     char *buf = le_arquivo(ARQ_SVG);
@@ -333,12 +333,12 @@ void test_svg_desenha_mapa_base_com_quadras(void) {
     exhash_t *mapa = exhash_init("t_svg_quadras.hf", quadra_get_size(), 4096);
 
     quadra_t *q1 = quadra_init("c1", 10.0, 10.0, 50.0, 30.0);
-    quadra_set_cq(q1, 1.0, "orange", "black");
+    quadra_set_cq(q1, "1.0px", "orange", "black");
     exhash_insert(mapa, q1, "c1");
     quadra_destroy(q1);
 
     quadra_t *q2 = quadra_init("c2", 100.0, 100.0, 60.0, 40.0);
-    quadra_set_cq(q2, 2.0, "white", "blue");
+    quadra_set_cq(q2, "2.0px", "white", "blue");
     exhash_insert(mapa, q2, "c2");
     quadra_destroy(q2);
 
@@ -381,11 +381,11 @@ void test_multiplos_elementos_no_mesmo_svg(void) {
     FILE *svg = svg_init(ARQ_SVG);
 
     quadra_t *q = quadra_init("cepA", 10.0, 10.0, 80.0, 40.0);
-    quadra_set_cq(q, 1.0, "red", "black");
+    quadra_set_cq(q, "1.0px", "red", "black");
     svg_quadra_insert(svg, q);
     quadra_destroy(q);
 
-    svg_x_vermelho(svg, 50.0, 30.0);
+    svg_x_vermelho(svg, 50.0, 30.0, 80.0, 40.0);
     svg_cruz_insert(svg, 200.0, 200.0);
     svg_circulo_despejo(svg, 300.0, 300.0);
     svg_marcador_mudanca(svg, 400.0, 400.0, "111.111.111-11");

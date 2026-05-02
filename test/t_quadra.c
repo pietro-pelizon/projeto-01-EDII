@@ -81,8 +81,8 @@ void test_set_cep(void) {
 
 void test_set_sw(void) {
     quadra_t *q = quadra_init("c", 0, 0, 0, 0);
-    quadra_set_sw(q, 3.14);
-    TEST_ASSERT_EQUAL_DOUBLE(3.14, quadra_get_sw(q));
+    quadra_set_sw(q, "3.14px");
+    TEST_ASSERT_EQUAL_STRING("3.14px", quadra_get_sw(q));
     quadra_destroy(q);
 }
 
@@ -102,8 +102,8 @@ void test_set_corb(void) {
 
 void test_set_cq_aplica_todos_os_campos(void) {
     quadra_t *q = quadra_init("c", 0, 0, 0, 0);
-    quadra_set_cq(q, 2.5, "red", "blue");
-    TEST_ASSERT_EQUAL_DOUBLE(2.5,    quadra_get_sw(q));
+    quadra_set_cq(q, "2.5px", "red", "blue");
+    TEST_ASSERT_EQUAL_STRING("2.5px",    quadra_get_sw(q));
     TEST_ASSERT_EQUAL_STRING("red",  quadra_get_corp(q));
     TEST_ASSERT_EQUAL_STRING("blue", quadra_get_corb(q));
     quadra_destroy(q);
@@ -111,7 +111,7 @@ void test_set_cq_aplica_todos_os_campos(void) {
 
 void test_set_cq_nao_confunde_corp_e_corb(void) {
     quadra_t *q = quadra_init("c", 0, 0, 0, 0);
-    quadra_set_cq(q, 1.0, "white", "black");
+    quadra_set_cq(q, "1.0px", "white", "black");
     TEST_ASSERT_EQUAL_STRING("white", quadra_get_corp(q));
     TEST_ASSERT_EQUAL_STRING("black", quadra_get_corb(q));
     // garante que não estão trocados
@@ -121,9 +121,9 @@ void test_set_cq_nao_confunde_corp_e_corb(void) {
 
 void test_set_cq_sobrescreve_valores_anteriores(void) {
     quadra_t *q = quadra_init("c", 0, 0, 0, 0);
-    quadra_set_cq(q, 1.0, "green", "yellow");
-    quadra_set_cq(q, 5.0, "red",   "blue");
-    TEST_ASSERT_EQUAL_DOUBLE(5.0,    quadra_get_sw(q));
+    quadra_set_cq(q, "1.0px", "green", "yellow");
+    quadra_set_cq(q, "5.0px", "red",   "blue");
+    TEST_ASSERT_EQUAL_STRING("5.0px",    quadra_get_sw(q));
     TEST_ASSERT_EQUAL_STRING("red",  quadra_get_corp(q));
     TEST_ASSERT_EQUAL_STRING("blue", quadra_get_corb(q));
     quadra_destroy(q);

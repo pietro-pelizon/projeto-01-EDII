@@ -9,12 +9,12 @@
 
 // se lê 'cq', preenche as variáveis corretas de espessura, cor de preenchimento e cor de borda
 static void processa_comando_cq(const char *linha_lida, char *sw_atual, char *corp_atual, char *corb_atual) {
-    sscanf(linha_lida, "%*s %19s %19s %19s", sw_atual, corp_atual, corb_atual);
+    sscanf(linha_lida, "%*s %11s %19s %19s", sw_atual, corp_atual, corb_atual);
 }
 
 // se lê 'q', adiciona nova quadra com determinados atributos ao seu respectivo hashfile.hf
 static void processa_comando_q(const char *linha_lida, exhash_t *mapa_quadras,
-                        double sw_atual, const char *corp_atual, const char *corb_atual) {
+                        char *sw_atual, const char *corp_atual, const char *corb_atual) {
     char cep[16];
     double x, y, w, h;
 
@@ -32,7 +32,7 @@ static void processa_comando_q(const char *linha_lida, exhash_t *mapa_quadras,
     quadra_destroy(nova_quadra);
 }
 
-// função principal que processa todo o arquivo (.geo) e retorna seu hashfile.hf preenchido
+// função principal que processa o arquivo (.geo) e retorna seu hashfile.hf preenchido
 exhash_t *processa_geo(const char *caminho_geo) {
     FILE *arquivo_geo = fopen(caminho_geo, "r");
     if (!arquivo_geo) {
@@ -57,8 +57,7 @@ exhash_t *processa_geo(const char *caminho_geo) {
             processa_comando_cq(linha_leitura, espessura_borda, cor_preenchimento, cor_borda);
         }
         else if (strcmp(comando, "q") == 0) {
-            double sw = atof(espessura_borda);
-            processa_comando_q(linha_leitura, mapa_quadras, sw, cor_preenchimento, cor_borda);
+            processa_comando_q(linha_leitura, mapa_quadras, espessura_borda, cor_preenchimento, cor_borda);
         }
     }
 
