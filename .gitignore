@@ -1,6 +1,5 @@
 *.exe
 *.o
-*.txt
 *.json
 *.cmake
 *.build
@@ -14,16 +13,11 @@
 *.EXE
 *.bin
 ted
-
-
+saida
+t1
+CMakeLists.txt
+*.txt
 
 build
-testes-t1
-/unity/Unity/.github
-/unity/auto
-/unity/docs
-/unity/examples
-/unity/extras
-/unity/test
 
 
