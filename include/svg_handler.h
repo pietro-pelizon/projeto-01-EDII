@@ -38,11 +38,13 @@ FILE* svg_init(const char* caminho_arquivo);
 /// @param q Ponteiro para a quadra com as dimensões e coordenadas a serem desenhadas.
 void svg_quadra_insert(FILE *svg, const quadra_t *q);
 
-/// @brief Desenha um 'X' vermelho em uma coordenada para simbolizar a remoção de uma quadra (comando rq).
+/// @brief Desenha um 'X' vermelho que cobra a quadra toda para simbolizar sua remoção (comando rq).
 /// @param svg Ponteiro para o arquivo SVG aberto para escrita.
 /// @param x Coordenada X (eixo horizontal) do centro da quadra removida.
 /// @param y Coordenada Y (eixo vertical) do centro da quadra removida.
-void svg_x_vermelho(FILE *svg, double x, double y);
+/// @param w Largura da quadra removida.
+/// @param h Altura da quadra removida.
+void svg_x_vermelho(FILE *svg, double x, double y, double w, double h);
 
 /// @brief Escreve os dados populacionais (censo) de cada face no interior do desenho da quadra.
 /// @param svg Ponteiro para o arquivo SVG aberto para escrita.
