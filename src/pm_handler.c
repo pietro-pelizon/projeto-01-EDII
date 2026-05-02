@@ -9,10 +9,10 @@
 #include <stdlib.h>
 
 static void processa_comando_p(exhash_t *map, const char *linha_lida) {
-    char cpf[16], nome[20], sobrenome[20], data_nascimento[12];
+    char cpf[16], nome[64], sobrenome[64], data_nascimento[12];
     char sexo;
 
-    sscanf(linha_lida, "%*s %15s %19s %19s %c %11s", cpf, nome, sobrenome, &sexo, data_nascimento);
+    sscanf(linha_lida, "%*s %15s %63s %63s %c %11s", cpf, nome, sobrenome, &sexo, data_nascimento);
 
     habitante_t *novo = habitante_init(cpf, nome, sobrenome, sexo, data_nascimento);
     if (novo == NULL) return;
@@ -27,13 +27,13 @@ static void processa_comando_p(exhash_t *map, const char *linha_lida) {
 static void processa_comando_m(exhash_t *mapa_quadras, exhash_t *mapa_habitantes, const char *linha_lida) {
     assert(mapa_habitantes != NULL);
 
-    char cpf[16], cep[16], complemento[20] = "";
+    char cpf[16], cep[16], complemento[64] = "";
     char face;
     double num;
 
 
 
-    sscanf(linha_lida, "%*s %15s %15s %c %lf %19[^\n]", cpf, cep, &face, &num, complemento);
+    sscanf(linha_lida, "%*s %15s %15s %c %lf %63[^\n]", cpf, cep, &face, &num, complemento);
 
     habitante_t *morador = (habitante_t *) exhash_remove(mapa_habitantes, cpf);
     quadra_t *quadra_buscada = malloc(quadra_get_size());
