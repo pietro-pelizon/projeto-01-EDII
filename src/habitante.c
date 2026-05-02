@@ -8,14 +8,14 @@ typedef struct __attribute__((packed)) stEndereco {
     char cep[16];
     char face;
     double numero;
-    char complemento[20];
+    char complemento[64];
 }  __attribute__((packed)) endereco_t;
 
 
 typedef struct __attribute__((packed)) stHabitante {
     char cpf[16];
-    char nome[20];
-    char sobrenome[20];
+    char nome[64];
+    char sobrenome[64];
     char sexo;
     char data_nascimento[12];
     bool sem_teto;
@@ -34,8 +34,8 @@ habitante_t *habitante_init(const char *cpf, const char *nome,
     assert(novo != NULL);
 
     strncpy(novo -> cpf, cpf, 16);
-    strncpy(novo -> nome, nome, 20);
-    strncpy(novo -> sobrenome, sobrenome, 20);
+    strncpy(novo -> nome, nome, 64);
+    strncpy(novo -> sobrenome, sobrenome, 64);
     strncpy(novo -> data_nascimento, data_de_nascimento, 12);
 
     novo -> sexo = sexo;
@@ -53,7 +53,7 @@ void habitante_destroy(habitante_t *h) {
 void habitante_set_endereco(habitante_t *hab, char *cep, char face, double numero, char *complemento) {
 
     strncpy(hab -> endereco.cep, cep, 16);
-    strncpy(hab -> endereco.complemento, complemento, 20);
+    strncpy(hab -> endereco.complemento, complemento, 64);
 
     hab -> endereco.face = face;
     hab -> endereco.numero = numero;
@@ -73,15 +73,15 @@ void habitante_set_cpf(habitante_t *hab, const char *cpf) {
 void habitante_set_nome(habitante_t *hab, const char *nome) {
     if (hab == NULL || nome == NULL) return;
 
-    strncpy(hab -> nome, nome, 20);
-    hab -> nome[19] = '\0';
+    strncpy(hab -> nome, nome, 64);
+    hab -> nome[63] = '\0';
 }
 
 void habitante_set_sobrenome(habitante_t *hab, const char *sobrenome) {
     if (hab == NULL || sobrenome == NULL) return;
 
-    strncpy(hab -> sobrenome, sobrenome, 20);
-    hab -> sobrenome[19] = '\0';
+    strncpy(hab -> sobrenome, sobrenome, 64);
+    hab -> sobrenome[63] = '\0';
 }
 
 void habitante_set_sexo(habitante_t *hab, char sexo) {
@@ -154,8 +154,8 @@ void habitante_set_numero_casa(habitante_t *hab, double numero) {
 void habitante_set_complemento(habitante_t *hab, const char *complemento) {
     if (hab == NULL || complemento == NULL) return;
 
-    strncpy(hab -> endereco.complemento, complemento, 20);
-    hab -> endereco.complemento[19] = '\0';
+    strncpy(hab -> endereco.complemento, complemento, 64);
+    hab -> endereco.complemento[63] = '\0';
 }
 
 // ==========================================
@@ -191,12 +191,19 @@ void habitante_print_info(FILE *txt, const habitante_t *h) {
     fprintf(txt, "Nome: %s\n", habitante_get_nome(h));
     fprintf(txt, "Sobrenome: %s\n", habitante_get_sobrenome(h));
     fprintf(txt, "Sexo: %c\n", habitante_get_sexo(h));
-    fprintf(txt, "Data de nascimento:  %s\n", habitante_get_data_nascimento(h));
+    fprintf(txt, "Data de nascimento: %s\n", habitante_get_data_nascimento(h));
 }
 
 void habitante_endereco_print_info(FILE *txt, const habitante_t *h) {
-    fprintf(txt, "CEP: %s\n", habitante_get_cep(h));
-    fprintf(txt, "Face: %c\n", habitante_get_face(h));
-    fprintf(txt, "Número da casa: %.2lf\n", habitante_get_numero_casa(h));
-    fprintf(txt, "Complemento: %s\n", habitante_get_complemento(h));
+        fprintf(txt, "-- Endereço --\n");
+    if (!habitante_is_sem_teto(h)) {
+        fprintf(txt, "CEP: %s\n", habitante_get_cep(h));
+        fprintf(txt, "Face: %c\n", habitante_get_face(h));
+        fprintf(txt, "Número da casa: %.2lf\n", habitante_get_numero_casa(h));
+        fprintf(txt, "Complemento: %s\n", habitante_get_complemento(h));
+    }
+
+    else {
+        fprintf(txt, "Habitante não é morador.\n");
+    }
 }
