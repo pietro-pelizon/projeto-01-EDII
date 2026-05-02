@@ -19,7 +19,7 @@ extern "C"
 {
 #endif
 
-#include "Unity/src/unity_internals.h"
+#include "unity_internals.h"
 
 /*-------------------------------------------------------
  * Test Setup / Teardown
