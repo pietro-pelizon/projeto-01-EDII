@@ -49,6 +49,82 @@ static inline uint64_t dir_mask(const exhash_t *hashfile) {
 }
 
 // ============== FUNÇÕES PRINCIPAIS DO MÓDULO ==============
+void exhash_dump(exhash_t *map, const char *filename_hfd) {
+    if (map == NULL || filename_hfd == NULL) return;
+
+    FILE *out = fopen(filename_hfd, "w");
+    if (!out) {
+        printf("ERRO: Nao foi possivel criar o arquivo de dump %s\n", filename_hfd);
+        return;
+    }
+
+    uint64_t dir_entries = dir_size(map);
+    uint64_t capacity = exhash_capacity(map);
+
+    fprintf(out, "=========================================\n");
+    fprintf(out, "      DUMP DO ARQUIVO DE HASH (.hf)      \n");
+    fprintf(out, "=========================================\n");
+    fprintf(out, "Profundidade Global : %u\n", map->global_depth);
+    fprintf(out, "Tamanho do Bucket   : %u bytes\n", map->bucket_size);
+    fprintf(out, "Tamanho do Registro : %u bytes\n", map->record_size);
+    fprintf(out, "Capacidade p/ Balde : %lu registros\n", capacity);
+    fprintf(out, "Total de Entradas   : %lu (Diretorio)\n", dir_entries);
+    fprintf(out, "=========================================\n\n");
+
+    fprintf(out, "--- MAPA DO DIRETORIO ---\n");
+    for (uint64_t i = 0; i < dir_entries; i++) {
+        fprintf(out, "  [%03lu] -> Offset: 0x%08lX\n", i, map->directory[i]);
+    }
+    fprintf(out, "\n");
+
+    fprintf(out, "--- DADOS DOS BALDES (BUCKETS) ---\n");
+
+    uint64_t *visitados = malloc(dir_entries * sizeof(uint64_t));
+    uint64_t qtd_visitados = 0;
+
+    for (uint64_t i = 0; i < dir_entries; i++) {
+        uint64_t offset = map->directory[i];
+
+        bool ja_visitado = false;
+        for (uint64_t v = 0; v < qtd_visitados; v++) {
+            if (visitados[v] == offset) {
+                ja_visitado = true;
+                break;
+            }
+        }
+
+        if (ja_visitado) continue;
+        visitados[qtd_visitados++] = offset;
+
+        bucket_t header;
+        fseek(map->file, (long)offset, SEEK_SET);
+        fread(&header, sizeof(bucket_t), 1, map->file);
+
+        fprintf(out, "Balde @ Offset 0x%08lX:\n", offset);
+        fprintf(out, "  Profundidade Local : %u\n", header.local_depth);
+        fprintf(out, "  Contagem Registros : %u / %lu\n", header.record_count, capacity);
+
+        uint64_t slot_size = sizeof(uint64_t) + map->record_size;
+
+        if (header.record_count == 0) {
+            fprintf(out, "  [Vazio]\n");
+        } else {
+            for (uint16_t j = 0; j < header.record_count; j++) {
+                uint64_t slot_key;
+                uint64_t slot_offset = offset + sizeof(bucket_t) + (j * slot_size);
+
+                fseek(map->file, (long)slot_offset, SEEK_SET);
+                fread(&slot_key, sizeof(uint64_t), 1, map->file);
+
+                fprintf(out, "    Registro [%02u] -> Hash Key: 0x%016llX\n", j, (unsigned long long)slot_key);
+            }
+        }
+        fprintf(out, "-----------------------------------------\n");
+    }
+
+    free(visitados);
+    fclose(out);
+}
 
 exhash_t *exhash_init(const char *filename, uint32_t record_size, uint32_t bucket_size) {
     exhash_t *map = malloc(sizeof(exhash_t));
@@ -56,18 +132,18 @@ exhash_t *exhash_init(const char *filename, uint32_t record_size, uint32_t bucke
 
     map -> record_size = record_size;
     map -> bucket_size = bucket_size;
-    map -> file = fopen(filename, "r+b");
+    map -> file = fopen(filename, "w+b");
 
-    if (map -> file == NULL) {
-        map -> file = fopen(filename, "w+b");
+    //if (map -> file == NULL) {
+      //  map -> file = fopen(filename, "w+b");
 
-        if (!map -> file) { free(map); return NULL; }
+     //   if (!map -> file) { free(map); return NULL; }
 
         init_new_exhash(map);
-    }
-    else {
-        load_existing_exhash(map);
-    }
+    //}
+    // else {
+    //     load_existing_exhash(map);
+    // }
 
     return map;
 }

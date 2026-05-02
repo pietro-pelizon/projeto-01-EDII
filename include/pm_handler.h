@@ -12,6 +12,6 @@
 /// @param caminho_arquivo Caminho para o arquivo (.pm), referenciado pela flag "-pm" na linha de comando.
 /// @param mapa_quadras Ponteiro para o hashfile das quadras (necessário para validar endereços).
 /// @return Retorna o hashfile criado após processar o arquivo (.pm).
-exhash_t *pm_processa_arquivo(const char *caminho_arquivo, exhash_t *mapa_quadras);
+exhash_t *pm_processa_arquivo(const char *caminho_arquivo, exhash_t *mapa_quadras, const char *filename_hf);
 
 #endif //PROJETO_01_EDII_PM_HANDLER_H

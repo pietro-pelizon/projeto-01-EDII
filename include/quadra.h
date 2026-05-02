@@ -91,7 +91,7 @@ void quadra_set_corb(quadra_t *q, const char *nova_corb);
 /// @brief Define a espessura da borda (stroke width) do retângulo da quadra.
 /// @param q Ponteiro para a quadra que será alterada.
 /// @param novo_sw Novo valor numérico da espessura.
-void quadra_set_sw(quadra_t *q, double novo_sw);
+void quadra_set_sw(quadra_t *q, const char *novo_sw);
 
 /// @brief Obtém o número de moradores registrados na face norte da quadra.
 /// @param q Ponteiro para a quadra.
@@ -126,7 +126,7 @@ const char *quadra_get_corb(const quadra_t *q);
 /// @brief Obtém a espessura da borda (stroke width) atual da quadra.
 /// @param q Ponteiro para a quadra.
 /// @return Retorna o valor numérico da espessura.
-double quadra_get_sw(const quadra_t *q);
+const char *quadra_get_sw(const quadra_t *q);
 
 /// @brief Obtém o CEP (identificador único) da quadra.
 /// @param q Ponteiro para a quadra.
@@ -158,7 +158,7 @@ double quadra_get_h(const quadra_t *q);
 /// @param sw Espessura da borda (stroke width).
 /// @param corb Cor da borda (cstrk).
 /// @param corp Cor de preenchimento (cfill).
-void quadra_set_cq(quadra_t *q, double sw, const char *corp,  const char *corb);
+void quadra_set_cq(quadra_t *q, char *sw, const char *corp,  const char *corb);
 
 /// @return Retorna o tamanho em bytes da estrutura quadra
 size_t quadra_get_size();

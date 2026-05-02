@@ -8,7 +8,7 @@
 #include "qry_handler.h"
 #include "svg_handler.h"
 
-#define PATH_SIZE 520
+#define PATH_SIZE 530
 
 static void monta_caminho(char* path_completo, const char* base_dir, const char* nome_arquivo) {
     if (base_dir != NULL && strlen(base_dir) > 0) {
@@ -35,9 +35,6 @@ int main(int argc, char *argv[]) {
     char *path_geo = NULL;
     char *path_qry = NULL;
 
-    remove("hashfile_quadras.hf");       // Deleta o arquivo velho (se existir) evitando conflito entre dados dos testes
-    remove("hashfile_habitantes.hf");
-
     // 1. Leitura dos argumentos
     for (int i = 0; i < argc; i++){
         if (strcmp(argv[i], "-e") == 0 && i + 1 < argc) path_entrada = argv[++i];
@@ -47,56 +44,72 @@ int main(int argc, char *argv[]) {
         else if (strcmp(argv[i], "-pm") == 0 && i + 1 < argc) path_pm = argv[++i];
     }
 
-    // 3. Checagem de parâmetros obrigatórios
+    // 2. Checagem de parâmetros obrigatórios
     if (path_geo == NULL || path_saida == NULL) {
-        fprintf(stderr, "ERRO: Parâmetros obrigatórios -f <arquivo.geo> ou -o <dir_saida> faltando!\n");
+        fprintf(stderr, "ERRO: Parametros obrigatorios -f <arquivo.geo> ou -o <dir_saida> faltando!\n");
         return 1;
     }
 
-    // 4. Processamento do arquivo (.geo)
+    // 3. Extração dos nomes base (Trazemos o (.qry) pra cá para usar nos nomes dos arquivos)
+    char nome_base_geo[256] = "";
+    extrair_nome_base(path_geo, nome_base_geo);
+
+    char nome_base_qry[256] = "";
+    if (path_qry != NULL) {
+        extrair_nome_base(path_qry, nome_base_qry);
+    }
+
+    // 4. Monta os caminhos exatos dos Bancos de Dados (.hf)
+    char hf_quadras[PATH_SIZE];
+    char hf_hab[PATH_SIZE];
+
+    if (path_qry != NULL) {
+        snprintf(hf_quadras, PATH_SIZE, "%s/%s-%s-quadras.hf", path_saida, nome_base_geo, nome_base_qry);
+        snprintf(hf_hab, PATH_SIZE, "%s/%s-%s-habitantes.hf", path_saida, nome_base_geo, nome_base_qry);
+    } else {
+        snprintf(hf_quadras, PATH_SIZE, "%s/%s-quadras.hf", path_saida, nome_base_geo);
+        snprintf(hf_hab, PATH_SIZE, "%s/%s-habitantes.hf", path_saida, nome_base_geo);
+    }
+
+    // 5. Processamento do arquivo (.geo)
     char path_geo_completo[PATH_SIZE];
     monta_caminho(path_geo_completo, path_entrada, path_geo);
 
-    char nome_base_geo[256];
-    extrair_nome_base(path_geo, nome_base_geo);
-
     printf("[*] Processando mapa base: %s\n", path_geo_completo);
-    exhash_t *hashfile_quadras = processa_geo(path_geo_completo);
+
+    exhash_t *hashfile_quadras = processa_geo(path_geo_completo, hf_quadras);
 
     if (hashfile_quadras == NULL) {
-        fprintf(stderr, "ERRO: falha crítica ao processar .geo\n");
+        fprintf(stderr, "ERRO: falha critica ao processar .geo\n");
         return 1;
     }
 
-    // 5. Geração do arquivo (.svg) inicial após ler apenas o (.geo)
+    // 6. Geração do arquivo (.svg) inicial após ler apenas o (.geo)
     char path_svg_geo[PATH_SIZE];
     sprintf(path_svg_geo, "%s/%s.svg", path_saida, nome_base_geo);
 
     FILE *svg_geo_file = svg_init(path_svg_geo);
     if (svg_geo_file) {
-        // Percorre o hash e desenha as quadras
         svg_desenha_mapa_base(svg_geo_file, hashfile_quadras);
         fecha_svg(svg_geo_file);
-        printf("[*] Primeiro SVG gerado com sucesso: %s\n", path_svg_geo);
+        printf("[*] Primeiro (.svg) gerado com sucesso: %s\n", path_svg_geo);
     }
 
-    // 6. Processamento do arquivo (.pm)
+    // 7. Processamento do arquivo (.pm)
     exhash_t *hashfile_habitantes = NULL;
     if (path_pm != NULL) {
         char path_pm_completo[PATH_SIZE];
         monta_caminho(path_pm_completo, path_entrada, path_pm);
 
         printf("[*] Inserindo populacao: %s\n", path_pm_completo);
-        hashfile_habitantes = pm_processa_arquivo(path_pm_completo, hashfile_quadras);
+
+        hashfile_habitantes = pm_processa_arquivo(path_pm_completo, hashfile_quadras, hf_hab);
     }
 
-    // 7. Processamento do arquivo (.qry)
+    // 8. Processamento do arquivo (.qry)
     if (path_qry != NULL && hashfile_habitantes != NULL) {
         char path_qry_completo[PATH_SIZE];
         monta_caminho(path_qry_completo, path_entrada, path_qry);
-
-        char nome_base_qry[256];
-        extrair_nome_base(path_qry, nome_base_qry);
 
         char path_txt_out[PATH_SIZE];
         char path_svg_out[PATH_SIZE];
@@ -107,16 +120,31 @@ int main(int argc, char *argv[]) {
         FILE *svg_qry_file = svg_init(path_svg_out);
 
         if (txt_file && svg_qry_file) {
-            printf("[*] Executando consultas do QRY: %s\n", path_qry_completo);
+            printf("[*] Executando consultas do (.qry): %s\n", path_qry_completo);
             svg_desenha_mapa_base(svg_qry_file, hashfile_quadras);
             processa_qry(path_qry_completo, hashfile_habitantes, hashfile_quadras, txt_file, svg_qry_file);
 
             fecha_svg(svg_qry_file);
             fclose(txt_file);
-            printf("[*] Relatorios finais gerados: %s e %s\n", path_txt_out, path_svg_out);
         }
     }
 
+    // 9. DUMP FINAL (.hfd)
+    char nome_dump_hab[PATH_SIZE];
+    char nome_dump_quadras[PATH_SIZE];
+
+    if (path_qry != NULL) {
+        snprintf(nome_dump_hab, PATH_SIZE, "%s/%s-%s-habitantes.hfd", path_saida, nome_base_geo, nome_base_qry);
+        snprintf(nome_dump_quadras, PATH_SIZE, "%s/%s-%s-quadras.hfd", path_saida, nome_base_geo, nome_base_qry);
+    } else {
+        snprintf(nome_dump_hab, PATH_SIZE, "%s/%s-habitantes.hfd", path_saida, nome_base_geo);
+        snprintf(nome_dump_quadras, PATH_SIZE, "%s/%s-quadras.hfd", path_saida, nome_base_geo);
+    }
+
+    exhash_dump(hashfile_habitantes, nome_dump_hab);
+    exhash_dump(hashfile_quadras, nome_dump_quadras);
+
+    // 10. Limpeza
     if (hashfile_quadras) exhash_destroy(hashfile_quadras);
     if (hashfile_habitantes) exhash_destroy(hashfile_habitantes);
 

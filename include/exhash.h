@@ -21,6 +21,17 @@ typedef struct stExhash exhash_t;
 typedef struct stBucket bucket_t;
 typedef struct stFile_header header_t;
 
+
+// @brief Gera uma representação esquemática e legível (dump) do arquivo de hash.
+// Esta função escreve um relatório em arquivo texto contendo os metadados
+// do Extendible Hashing (como profundidade global e tamanho do bucket),
+// mapeia os ponteiros do diretório e varre os baldes imprimindo as chaves
+// de hash contidas em cada slot. É uma ferramenta essencial para depuração
+// e análise estrutural do banco de dados.
+// @param map Ponteiro para a estrutura de controle do Hashfile ativo.
+// @param filename_hfd Caminho/nome do arquivo de texto (.hfd) de saída.
+void exhash_dump(exhash_t *map, const char *filename_hfd);
+
 /// @brief Inicializa o Hash Map em disco.
 /// Se o arquivo já existir, ele carrega o estado anterior. Se não, cria um banco de dados novo.
 /// @param filename Nome do arquivo físico (ex: "dados.hf") que será utilizado.

@@ -13,6 +13,6 @@
 // @brief Lê as informações de um arquivo (.geo) e processa as quadras.
 // @param caminho_geo Caminho para o arquivo (.geo) a ser lido, referenciado pela flag "-e" na linha de comando.
 // @param mapa_quadras Ponteiro para a hashfile onde as quadras serão inseridas.
-exhash_t *processa_geo(const char *caminho_geo);
+exhash_t *processa_geo(const char *caminho_geo, const char *filename_hf);
 
 #endif //PROJETO_01_EDII_GEO_HANDLER_H

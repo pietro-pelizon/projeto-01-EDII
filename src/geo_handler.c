@@ -33,14 +33,14 @@ static void processa_comando_q(const char *linha_lida, exhash_t *mapa_quadras,
 }
 
 // função principal que processa o arquivo (.geo) e retorna seu hashfile.hf preenchido
-exhash_t *processa_geo(const char *caminho_geo) {
+exhash_t *processa_geo(const char *caminho_geo, const char *filename_hf) {
     FILE *arquivo_geo = fopen(caminho_geo, "r");
     if (!arquivo_geo) {
         printf("Erro ao abrir %s\n", caminho_geo);
         return NULL;
     }
 
-    exhash_t *mapa_quadras = exhash_init("hashfile_quadras.hf", quadra_get_size(), 4096);
+    exhash_t *mapa_quadras = exhash_init(filename_hf, quadra_get_size(), 4096);
 
     char cor_preenchimento[20] = "white";
     char cor_borda[20] = "black";

@@ -66,9 +66,9 @@ static void processa_comando_m(exhash_t *mapa_quadras, exhash_t *mapa_habitantes
     free(quadra_buscada);
 }
 
-exhash_t *pm_processa_arquivo(const char *caminho_arquivo, exhash_t *mapa_quadras) {
+exhash_t *pm_processa_arquivo(const char *caminho_arquivo, exhash_t *mapa_quadras, const char *filename_hf) {
 
-    exhash_t *mapa_habitantes = exhash_init("hashfile_habitantes.hf", habitante_get_size(), 4096);
+    exhash_t *mapa_habitantes = exhash_init(filename_hf, habitante_get_size(), 4096);
 
     assert(mapa_habitantes != NULL);
 
