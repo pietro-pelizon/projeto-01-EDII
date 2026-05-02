@@ -76,7 +76,7 @@ test_svg: $(CORE_OBJS) ../test/t_svg_handler.c ../unity/unity.c
 
 clean:
 	@echo "Limpando arquivos..."
-	@rm -f ../build/*.o $(PROJ_NAME) test_hab test_geo test_exhash test_pm test_quadra test_qry test_svg *.hf
+	@rm -f ../build/*.o $(PROJ_NAME) test_hab test_geo test_exhash test_pm test_quadra test_qry test_svg *.hf *.hfd
 	@echo "✓ Limpeza concluída!"
 
 .PHONY: all clean test_hab test_geo test_exhash test_pm test_quadra test_qry test_svg
