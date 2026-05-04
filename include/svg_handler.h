@@ -42,9 +42,7 @@ void svg_quadra_insert(FILE *svg, const quadra_t *q);
 /// @param svg Ponteiro para o arquivo SVG aberto para escrita.
 /// @param x Coordenada X (eixo horizontal) do centro da quadra removida.
 /// @param y Coordenada Y (eixo vertical) do centro da quadra removida.
-/// @param w Largura da quadra removida.
-/// @param h Altura da quadra removida.
-void svg_x_vermelho(FILE *svg, double x, double y, double w, double h);
+void svg_x_vermelho(FILE *svg, double x, double y);
 
 /// @brief Escreve os dados populacionais (censo) de cada face no interior do desenho da quadra.
 /// @param svg Ponteiro para o arquivo SVG aberto para escrita.
