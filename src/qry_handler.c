@@ -53,12 +53,14 @@ static void desenhar_despejo_svg(FILE *svg, quadra_t *quadra_despejo, char face,
 //                             FUNÇÃO PRINCIPAL
 // ============================================================================
 
-void processa_qry(const char *caminho_qry, exhash_t *mapa_pessoas, exhash_t *mapa_quadras, FILE *txt, FILE *svg) {
+void processa_qry(const char *caminho_qry, exhash_t *mapa_pessoas, exhash_t *mapa_quadras, FILE *txt, FILE *svg_principal) {
     FILE *arquivo_qry = fopen(caminho_qry, "r");
     if (arquivo_qry == NULL) {
         printf("Erro ao abrir o %s.qry\n", caminho_qry);
         return;
     }
+
+    FILE *f_temp_marcacoes = tmpfile();
 
     char linha_leitura[256];
 
@@ -68,9 +70,9 @@ void processa_qry(const char *caminho_qry, exhash_t *mapa_pessoas, exhash_t *map
         sscanf(linha_leitura, "%6s", comando);
 
         if (strcmp(comando, "rq") == 0) {
-            comando_rq(linha_leitura, mapa_pessoas, mapa_quadras, txt, svg);
+            comando_rq(linha_leitura, mapa_pessoas, mapa_quadras, txt, f_temp_marcacoes);
         } else if (strcmp(comando, "pq") == 0) {
-            comando_pq(linha_leitura, mapa_pessoas, mapa_quadras, txt, svg);
+            comando_pq(linha_leitura, mapa_pessoas, mapa_quadras, txt, f_temp_marcacoes);
         } else if (strcmp(comando, "censo") == 0) {
             comando_censo(mapa_pessoas, txt);
         } else if (strcmp(comando, "h?") == 0) {
@@ -78,14 +80,26 @@ void processa_qry(const char *caminho_qry, exhash_t *mapa_pessoas, exhash_t *map
         } else if (strcmp(comando, "nasc") == 0) {
             comando_nasc(linha_leitura, mapa_pessoas, txt);
         } else if (strcmp(comando, "rip") == 0) {
-            comando_rip(linha_leitura, mapa_quadras, mapa_pessoas, txt, svg);
+            comando_rip(linha_leitura, mapa_quadras, mapa_pessoas, txt, f_temp_marcacoes);
         } else if (strcmp(comando, "mud") == 0) {
-            comando_mud(linha_leitura, mapa_quadras, mapa_pessoas, svg, txt);
+            comando_mud(linha_leitura, mapa_quadras, mapa_pessoas, f_temp_marcacoes, txt);
         } else if (strcmp(comando, "dspj") == 0) {
-            comando_dspj(linha_leitura, mapa_pessoas, mapa_quadras, svg, txt);
+            comando_dspj(linha_leitura, mapa_pessoas, mapa_quadras, f_temp_marcacoes, txt);
         }
     }
 
+    svg_desenha_mapa_base(svg_principal, mapa_quadras);
+
+    // 2º Voltamos o leitor do buffer para o começo
+    rewind(f_temp_marcacoes);
+
+    // 3º Jogamos os "X" vermelhos e textos por cima do mapa base
+    char c;
+    while ((c = fgetc(f_temp_marcacoes)) != EOF) {
+        fputc(c, svg_principal);
+    }
+
+    fclose(f_temp_marcacoes); // Se autodestrói aqui
     fclose(arquivo_qry);
 }
 
@@ -94,11 +108,11 @@ void processa_qry(const char *caminho_qry, exhash_t *mapa_pessoas, exhash_t *map
 //                                COMANDOS
 // ============================================================================
 
-static void comando_rq(const char *linha_lida, exhash_t *mapa_pessoas, exhash_t *mapa_quadras, FILE *txt, FILE *svg) {
+static void comando_rq(const char *linha_lida, exhash_t *mapa_pessoas, exhash_t *mapa_quadras, FILE *txt, FILE *svg_rascunho) {
     assert(mapa_pessoas != NULL);
     assert(mapa_quadras != NULL);
     assert(txt != NULL);
-    assert(svg != NULL);
+    assert(svg_rascunho != NULL);
 
     char cep[20] = "";
 
@@ -113,10 +127,8 @@ static void comando_rq(const char *linha_lida, exhash_t *mapa_pessoas, exhash_t 
 
     double x_quadra = quadra_get_x(quadra_removida);
     double y_quadra = quadra_get_y(quadra_removida);
-    double w_quadra = quadra_get_w(quadra_removida);
-    double h_quadra = quadra_get_h(quadra_removida);
 
-    svg_x_vermelho(svg, x_quadra, y_quadra, w_quadra, h_quadra);
+    svg_x_vermelho(svg_rascunho, x_quadra, y_quadra);
 
     quadra_destroy(quadra_removida);
 
@@ -314,8 +326,11 @@ static void comando_dspj(const char *linha_lida, exhash_t *mapa_pessoas, exhash_
     char face = habitante_get_face(despejado);
     double numero = habitante_get_numero_casa(despejado);
 
-    quadra_t *quadra_despejo = exhash_remove(mapa_quadras, cep);
-    if (quadra_despejo == NULL) {
+
+    quadra_t *quadra_despejo = malloc (quadra_get_size());
+
+    bool achou = exhash_search(mapa_quadras, cep, quadra_despejo);
+    if (!achou) {
         exhash_insert(mapa_pessoas, despejado, cpf);
         habitante_destroy(despejado);
         return;
@@ -328,7 +343,6 @@ static void comando_dspj(const char *linha_lida, exhash_t *mapa_pessoas, exhash_
     habitante_set_sem_teto(despejado, true);
 
     exhash_insert(mapa_pessoas, despejado, cpf);
-    exhash_insert(mapa_quadras, quadra_despejo, cep);
 
     quadra_destroy(quadra_despejo);
     habitante_destroy(despejado);

@@ -121,7 +121,6 @@ int main(int argc, char *argv[]) {
 
         if (txt_file && svg_qry_file) {
             printf("[*] Executando consultas do (.qry): %s\n", path_qry_completo);
-            svg_desenha_mapa_base(svg_qry_file, hashfile_quadras);
             processa_qry(path_qry_completo, hashfile_habitantes, hashfile_quadras, txt_file, svg_qry_file);
 
             fecha_svg(svg_qry_file);
