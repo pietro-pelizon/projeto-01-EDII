@@ -227,7 +227,6 @@ static void comando_nasc(const char *linha_lida, exhash_t *mapa_pessoas, FILE *t
 
     habitante_t *recem_nascido = habitante_init(cpf, nome, sobrenome, sexo, data_nascimento);
     if (recem_nascido == NULL) {
-        printf("Erro Crítico: Falta de memoria ao tentar criar o habitante %s.\n", cpf);
         return;
     }
 
@@ -520,7 +519,6 @@ static void desenhar_cruz_obito_svg(FILE *svg, exhash_t *mapa_quadras, habitante
 
     quadra_t *quadra_falecido = calloc(1, quadra_get_size());
     if (quadra_falecido == NULL) {
-        printf("Erro ao alocar memória para quadra em rip\n");
         return;
     }
 

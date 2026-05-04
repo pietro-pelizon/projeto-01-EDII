@@ -257,7 +257,6 @@ void *exhash_remove(const exhash_t *map, const char *key) {
         return removed_data;
     }
 
-    printf("Dado não encontrado no hashfile!\n");
     return NULL;
 }
 

@@ -59,10 +59,6 @@ static void processa_comando_m(exhash_t *mapa_quadras, exhash_t *mapa_habitantes
 
     }
 
-    else {
-        printf("Aviso: Comando 'm' falhou. CPF %s não encontrado no banco.\n", cpf);
-    }
-
     free(quadra_buscada);
 }
 
