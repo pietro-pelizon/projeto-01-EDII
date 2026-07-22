@@ -26,7 +26,7 @@
 
 ## Sobre o Projeto
 
-Este projeto é a primeira etapa do desenvolvimento de um Sistema de Informação Geográfica (SIG) simulado, focado na implementação e uso de um **Hash Extensível (Extendible Hashing)**. O sistema gerencia entidades urbanas, como **Quadras** e **Habitantes**, processando dados de entrada e gerando saídas visuais vetoriais e relatórios textuais.
+Este projeto desenvolve um Sistema de Informação Geográfica (SIG) simulado, focado na implementação e uso de um **Hash Extensível (Extendible Hashing)**. O sistema gerencia entidades urbanas, como **Quadras** e **Habitantes**, processando dados de entrada e gerando saídas visuais vetoriais e relatórios textuais.
 
 O desenvolvimento inclui uma forte base de testes automatizados, utilizando o framework **Unity** para garantir a integridade das estruturas de dados e dos módulos interpretadores (parsers).
 
