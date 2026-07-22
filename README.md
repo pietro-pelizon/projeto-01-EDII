@@ -5,7 +5,7 @@
 ![Autor](https://img.shields.io/badge/Autor-Pietro%20Fernando%20Pelizon-maroon)
 ![C99](https://img.shields.io/badge/Language-C99-blue)
 ![Build](https://img.shields.io/badge/Makefile-GCC-green)
-![Data Structures](https://img.shields.io/badge/ED-Hash_Extens%C3%ADvel-orange)
+![Data Structures](https://img.shields.io/badge/ED-Hashmap-orange)
 ![Testing](https://img.shields.io/badge/Test-Unity_Framework-red)
 
 </div>
