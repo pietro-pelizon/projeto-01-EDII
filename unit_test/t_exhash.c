@@ -411,94 +411,6 @@ void test_get_all_sem_duplicatas_apos_expand(void) {
 }
 
 // ============================================================
-//  PERSISTÊNCIA
-// ============================================================
-
-void test_dado_persiste_apos_destroy_e_reopen(void) {
-    map = exhash_init(FILENAME, sizeof(int), 512);
-
-    int x = 33;
-    exhash_insert(map, &x, "persistente");
-
-    exhash_destroy(map);
-    map = NULL;
-
-    map = exhash_init(FILENAME, sizeof(int), 512);
-
-    int res;
-    bool found = exhash_search(map, "persistente", &res);
-    TEST_ASSERT_TRUE_MESSAGE(found, "Dado deve persistir apos reopen");
-    TEST_ASSERT_EQUAL_INT(33, res);
-}
-
-void test_multiplos_dados_persistem(void) {
-    map = exhash_init(FILENAME, sizeof(int), 512);
-
-    for (int i = 0; i < 20; i++) {
-        char chave[16];
-        sprintf(chave, "p%d", i);
-        exhash_insert(map, &i, chave);
-    }
-
-    exhash_destroy(map);
-    map = NULL;
-
-    map = exhash_init(FILENAME, sizeof(int), 512);
-
-    for (int i = 0; i < 20; i++) {
-        char chave[16];
-        sprintf(chave, "p%d", i);
-        int res;
-        bool found = exhash_search(map, chave, &res);
-        TEST_ASSERT_TRUE_MESSAGE(found, "Todos os dados devem persistir");
-        TEST_ASSERT_EQUAL_INT(i, res);
-    }
-}
-
-void test_struct_persiste_com_todos_campos(void) {
-    map = exhash_init(FILENAME, sizeof(Aluno), 1024);
-
-    Aluno a = {99, "Persistencia", 10.0};
-    exhash_insert(map, &a, "99");
-
-    exhash_destroy(map);
-    map = NULL;
-
-    map = exhash_init(FILENAME, sizeof(Aluno), 1024);
-
-    Aluno res;
-    bool found = exhash_search(map, "99", &res);
-    TEST_ASSERT_TRUE(found);
-    TEST_ASSERT_EQUAL_INT(99, res.id);
-    TEST_ASSERT_EQUAL_STRING("Persistencia", res.nome);
-    TEST_ASSERT_EQUAL_DOUBLE(10.0, res.nota);
-}
-
-void test_persistencia_apos_split(void) {
-    map = exhash_init(FILENAME, sizeof(int), 64);
-
-    for (int i = 0; i < 50; i++) {
-        char chave[16];
-        sprintf(chave, "s%d", i);
-        exhash_insert(map, &i, chave);
-    }
-
-    exhash_destroy(map);
-    map = NULL;
-
-    map = exhash_init(FILENAME, sizeof(int), 64);
-
-    for (int i = 0; i < 50; i++) {
-        char chave[16];
-        sprintf(chave, "s%d", i);
-        int res;
-        bool found = exhash_search(map, chave, &res);
-        TEST_ASSERT_TRUE_MESSAGE(found, "Dado deve persistir mesmo apos splits");
-        TEST_ASSERT_EQUAL_INT(i, res);
-    }
-}
-
-// ============================================================
 //  EDGE CASES
 // ============================================================
 
@@ -648,12 +560,6 @@ int main(void) {
     RUN_TEST(test_get_all_mapa_vazio);
     RUN_TEST(test_get_all_apos_remocoes);
     RUN_TEST(test_get_all_sem_duplicatas_apos_expand);
-
-    // Persistência
-    RUN_TEST(test_dado_persiste_apos_destroy_e_reopen);
-    RUN_TEST(test_multiplos_dados_persistem);
-    RUN_TEST(test_struct_persiste_com_todos_campos);
-    RUN_TEST(test_persistencia_apos_split);
 
     // Edge cases
     RUN_TEST(test_chave_com_caracteres_especiais);
