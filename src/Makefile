@@ -32,43 +32,43 @@ $(OBJ_DIR)/%.o: %.c
 # TARGETS DE TESTES
 # ==========================================================
 
-test_hab: $(CORE_OBJS) ../test/t_habitante.c ../unity/unity.c
+test_hab: $(CORE_OBJS) ../unit_test ../unity/unity.c
 	@echo "Compilando testes do Habitante..."
 	@$(CC) $(CFLAGS) $^ -o $@ $(LIBS)
 	@echo "Executando testes..."
 	@./$@
 
-test_geo: $(CORE_OBJS) ../test/t_geo_handler.c ../unity/unity.c
+test_geo: $(CORE_OBJS) ../unit_test ../unity/unity.c
 	@echo "Compilando testes do geo_handler..."
 	@$(CC) $(CFLAGS) $^ -o $@ $(LIBS)
 	@echo "Executando testes..."
 	@./$@
 
-test_exhash: $(CORE_OBJS) ../test/t_exhash.c ../unity/unity.c
+test_exhash: $(CORE_OBJS) ../unit_test ../unity/unity.c
 	@echo "Compilando testes do exhash..."
 	@$(CC) $(CFLAGS) $^ -o $@ $(LIBS)
 	@echo "Executando testes..."
 	@./$@
 
-test_pm: $(CORE_OBJS) ../test/t_pm_handler.c ../unity/unity.c
+test_pm: $(CORE_OBJS) ../unit_test ../unity/unity.c
 	@echo "Compilando testes do pm_handler..."
 	@$(CC) $(CFLAGS) $^ -o $@ $(LIBS)
 	@echo "Executando testes..."
 	@./$@
 
-test_quadra: $(CORE_OBJS) ../test/t_quadra.c ../unity/unity.c
+test_quadra: $(CORE_OBJS) ../unit_test ../unity/unity.c
 	@echo "Compilando testes do quadra..."
 	@$(CC) $(CFLAGS) $^ -o $@ $(LIBS)
 	@echo "Executando testes..."
 	@./$@
 
-test_qry: $(CORE_OBJS) ../test/t_qry_handler.c ../unity/unity.c
+test_qry: $(CORE_OBJS) ../unit_test ../unity/unity.c
 	@echo "Compilando testes do qry_handler..."
 	@$(CC) $(CFLAGS) $^ -o $@ $(LIBS)
 	@echo "Executando testes..."
 	@./$@
 
-test_svg: $(CORE_OBJS) ../test/t_svg_handler.c ../unity/unity.c
+test_svg: $(CORE_OBJS) ../unit_test ../unity/unity.c
 	@echo "Compilando testes do svg_handler..."
 	@$(CC) $(CFLAGS) $^ -o $@ $(LIBS)
 	@echo "Executando testes..."
