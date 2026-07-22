@@ -15,10 +15,10 @@
 ```text
 .
 ├── docs/
-├── include/           # Arquivos de cabeçalho (`.h`)
-├── src/               # Implementações (`.c`) e Makefile
-├── testes/            # Arquivos de comando (`.geo, .qry e .pm`)
-├── unit_test/         # Suítes de testes unitários (`t_*.c`)
+├── include/           # Arquivos de cabeçalho (.h)
+├── src/               # Implementações (.c) e Makefile
+├── testes/            # Arquivos de comando (.geo, .qry e .pm)
+├── unit_test/         # Suítes de testes unitários (t_*.c)
 ├── unity/             # Framework Unity para testes em C
 └── README.md          # Documentação do repositório
 ```
