@@ -9,7 +9,7 @@ LIBS      := -lm
 
 OBJ_DIR   := ../build
 
-SRC     := $(wildcard *.c)
+SRC       := $(wildcard *.c)
 OBJETOS   := $(patsubst %.c, $(OBJ_DIR)/%.o, $(SRC))
 
 CORE_OBJS := $(filter-out $(OBJ_DIR)/main.o, $(OBJETOS))
@@ -32,51 +32,21 @@ $(OBJ_DIR)/%.o: %.c
 # TARGETS DE TESTES
 # ==========================================================
 
-test_hab: $(CORE_OBJS) ../unit_test ../unity/unity.c
-	@echo "Compilando testes do Habitante..."
+t_%: $(CORE_OBJS) ../unit_test/t_%.c ../unity/unity.c
+	@echo "Compilando $@..."
 	@$(CC) $(CFLAGS) $^ -o $@ $(LIBS)
-	@echo "Executando testes..."
+	@echo "Executando testes...\n"
 	@./$@
 
-test_geo: $(CORE_OBJS) ../unit_test ../unity/unity.c
-	@echo "Compilando testes do geo_handler..."
-	@$(CC) $(CFLAGS) $^ -o $@ $(LIBS)
-	@echo "Executando testes..."
-	@./$@
-
-test_exhash: $(CORE_OBJS) ../unit_test ../unity/unity.c
-	@echo "Compilando testes do exhash..."
-	@$(CC) $(CFLAGS) $^ -o $@ $(LIBS)
-	@echo "Executando testes..."
-	@./$@
-
-test_pm: $(CORE_OBJS) ../unit_test ../unity/unity.c
-	@echo "Compilando testes do pm_handler..."
-	@$(CC) $(CFLAGS) $^ -o $@ $(LIBS)
-	@echo "Executando testes..."
-	@./$@
-
-test_quadra: $(CORE_OBJS) ../unit_test ../unity/unity.c
-	@echo "Compilando testes do quadra..."
-	@$(CC) $(CFLAGS) $^ -o $@ $(LIBS)
-	@echo "Executando testes..."
-	@./$@
-
-test_qry: $(CORE_OBJS) ../unit_test ../unity/unity.c
-	@echo "Compilando testes do qry_handler..."
-	@$(CC) $(CFLAGS) $^ -o $@ $(LIBS)
-	@echo "Executando testes..."
-	@./$@
-
-test_svg: $(CORE_OBJS) ../unit_test ../unity/unity.c
-	@echo "Compilando testes do svg_handler..."
-	@$(CC) $(CFLAGS) $^ -o $@ $(LIBS)
-	@echo "Executando testes..."
-	@./$@
+# ==========================================================
+# TARGETS DE LIMPEZA
+# ==========================================================
 
 clean:
-	@echo "Limpando arquivos..."
-	@rm -f ../build/*.o $(PROJ_NAME) test_hab test_geo test_exhash test_pm test_quadra test_qry test_svg *.hf *.hfd
-	@echo "✓ Limpeza concluída!"
+	@echo "Limpando build..."
+	@rm -rf $(OBJ_DIR)
+	@rm -f $(PROJ_NAME)
+	@rm -f t_*
+	@echo "Limpo!"
 
-.PHONY: all clean test_hab test_geo test_exhash test_pm test_quadra test_qry test_svg
+.PHONY: all clean t_% ted
