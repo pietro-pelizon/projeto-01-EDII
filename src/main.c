@@ -28,6 +28,9 @@ static void extrair_nome_base(const char *caminho, char *nome_base) {
     }
 }
 
+static void print_help();
+
+
 int main(int argc, char *argv[]) {
     char *path_entrada = NULL;
     char *path_saida = NULL;
@@ -36,12 +39,16 @@ int main(int argc, char *argv[]) {
     char *path_qry = NULL;
 
     // 1. Leitura dos argumentos
-    for (int i = 0; i < argc; i++){
+    for (int i = 0; i < argc; i++) {
         if (strcmp(argv[i], "-e") == 0 && i + 1 < argc) path_entrada = argv[++i];
         else if (strcmp(argv[i], "-o") == 0 && i + 1 < argc) path_saida = argv[++i];
         else if (strcmp(argv[i], "-q") == 0 && i + 1 < argc) path_qry = argv[++i];
         else if (strcmp(argv[i], "-f") == 0 && i + 1 < argc) path_geo = argv[++i];
         else if (strcmp(argv[i], "-pm") == 0 && i + 1 < argc) path_pm = argv[++i];
+        else if (strcmp(argv[i], "-h") == 0 || strcmp(argv[i], "--help") == 0) {
+            print_help();
+            return 0;
+        }
     }
 
     // 2. Checagem de parâmetros obrigatórios
@@ -149,4 +156,17 @@ int main(int argc, char *argv[]) {
 
     printf("Programa encerrado com sucesso!\n");
     return 0;
+}
+
+static void print_help() {
+    printf("Uso: ted [OPÇÕES]\n\n");
+    printf("Opções:\n");
+    printf("  -f <arquivo.geo>   (obrigatório) Arquivo com as quadras da cidade\n");
+    printf("  -o <dir>           (obrigatório) Diretório de saída\n");
+    printf("  -e <dir>           (opcional)    Diretório base dos testes\n");
+    printf("  -q <arquivo.qry>   (opcional)    Arquivo de consultas\n");
+    printf("  -pm <arquivo.pm>   (opcional)    Arquivo com a população da cidade\n");
+    printf("  -h, --help                       Exibe esta mensagem\n\n");
+    printf("Exemplo:\n");
+    printf("  ted -e entrada/ -f formas.geo -q consultas.qry -o saida/ -pm habitante.pm\n");
 }
