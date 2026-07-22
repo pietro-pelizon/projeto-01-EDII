@@ -78,13 +78,14 @@ A execução do programa segue o padrão de passagem de argumentos via CLI para 
 
 **Parâmetros:**
 
-| **Parâmetros** | **Obrigatório?** | **Descrição** |
-| --- | --- | --- |
-| `-e entrada` | Não | Diretório-base de entrada. Caso omitido, usa o diretório corrente. |
-| `-f arq.geo` | Sim | Nome do arquivo base de geometria presente no diretório de `entrada`. |
-| `-pm arq.pm` | Não | Nome do arquivo contendo os dados demográficos/pessoas. |
-| `-o saida` | Sim | Diretório-base de saída onde os arquivos `.svg` e `.txt` serão gravados. |
-| `-q arq.qry` | Não | Arquivo de consultas e processamento do sistema. |
+| **Parâmetros** | **Obrigatório?** | **Descrição**                                                              |
+|----------------|------------------|----------------------------------------------------------------------------|
+| `-e entrada`   | Não              | Diretório-base de entrada. Caso omitido, usa o diretório corrente.         |
+| `-f arq.geo`   | Sim              | Nome do arquivo base de geometria presente no diretório de `entrada`.      |
+| `-pm arq.pm`   | Não              | Nome do arquivo contendo os dados demográficos/pessoas.                    |
+| `-o saida`     | Sim              | Diretório-base de saída onde os arquivos `.svg` e `.txt` serão gravados.   |
+| `-q arq.qry`   | Não              | Arquivo de consultas e processamento do sistema.                           |
+| `-h \| --help` | Não              | Exibe uma mensagem com as informações necessárias para executar o programa | 
 
 ## Estrutura do Código (Módulos)
 
