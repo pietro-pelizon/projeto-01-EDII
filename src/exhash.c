@@ -30,7 +30,6 @@ static uint64_t murmurhash3_64(const void *key, size_t len, uint32_t seed);
 static uint64_t exhash_capacity(const exhash_t *map);
 static void     write_empty_bucket(FILE *file, uint32_t bucket_size, uint16_t depth);
 static void     update_file_header(const exhash_t *map);
-static void     load_existing_exhash(exhash_t *map);
 static void     init_new_exhash(exhash_t *map);
 static bool     insert_raw_into_bucket(const exhash_t *map, uint64_t offset, bucket_t *b, uint64_t numeric_key, const void *data);
 static bool     insert_into_bucket(const exhash_t *map, uint64_t offset, bucket_t *b, const void *key, const void *data);
@@ -134,16 +133,7 @@ exhash_t *exhash_init(const char *filename, uint32_t record_size, uint32_t bucke
     map -> bucket_size = bucket_size;
     map -> file = fopen(filename, "w+b");
 
-    //if (map -> file == NULL) {
-      //  map -> file = fopen(filename, "w+b");
-
-     //   if (!map -> file) { free(map); return NULL; }
-
-        init_new_exhash(map);
-    //}
-    // else {
-    //     load_existing_exhash(map);
-    // }
+    init_new_exhash(map);
 
     return map;
 }
@@ -361,12 +351,12 @@ static uint64_t murmurhash3_64(const void *key, size_t len, const uint32_t seed)
 
     const unsigned char *data2 = (const unsigned char *)data;
     switch (len & 7) {
-        case 7: h ^= (uint64_t)data2[6] << 48;
-        case 6: h ^= (uint64_t)data2[5] << 40;
-        case 5: h ^= (uint64_t)data2[4] << 32;
-        case 4: h ^= (uint64_t)data2[3] << 24;
-        case 3: h ^= (uint64_t)data2[2] << 16;
-        case 2: h ^= (uint64_t)data2[1] << 8;
+        case 7: h ^= (uint64_t)data2[6] << 48; // fall through
+        case 6: h ^= (uint64_t)data2[5] << 40; // fall through
+        case 5: h ^= (uint64_t)data2[4] << 32; // fall through
+        case 4: h ^= (uint64_t)data2[3] << 24; // fall through
+        case 3: h ^= (uint64_t)data2[2] << 16; // fall through
+        case 2: h ^= (uint64_t)data2[1] << 8;  // fall through
         case 1: h ^= (uint64_t)data2[0];
             h *= m;
             break;
@@ -406,22 +396,6 @@ static void update_file_header(const exhash_t *map) {
 
     fseek(map -> file, 0, SEEK_SET);
     fwrite(&header, sizeof(file_header_t), 1, map -> file);
-}
-
-static void load_existing_exhash(exhash_t *map) {
-    file_header_t header;
-    fseek(map -> file, 0, SEEK_SET);
-    fread(&header, sizeof(file_header_t), 1, map -> file);
-
-    map -> global_depth = header.global_depth;
-    map -> bucket_size  = header.bucket_size;
-    map -> record_size  = header.record_size;
-
-    uint32_t num_entries = (uint32_t)dir_size(map);
-    map -> directory = malloc(sizeof(uint64_t) * num_entries);
-
-    fseek(map -> file, (long)header.directory_offset, SEEK_SET);
-    fread(map -> directory, sizeof(uint64_t), num_entries, map -> file);
 }
 
 static void init_new_exhash(exhash_t *map) {
