@@ -147,6 +147,6 @@ int main(int argc, char *argv[]) {
     if (hashfile_quadras) exhash_destroy(hashfile_quadras);
     if (hashfile_habitantes) exhash_destroy(hashfile_habitantes);
 
-    printf("Programa encerrado com sucesso!.\n");
+    printf("Programa encerrado com sucesso!\n");
     return 0;
 }
