@@ -5,7 +5,7 @@
 ![Autor](https://img.shields.io/badge/Autor-Pietro%20Fernando%20Pelizon-maroon)
 ![C99](https://img.shields.io/badge/Language-C99-blue)
 ![Build](https://img.shields.io/badge/Makefile-GCC-green)
-![Data Structures](https://img.shields.io/badge/ED-Hash_Extens%C3%ADvel-orange)
+![Data Structures](https://img.shields.io/badge/ED-Hashmap-orange)
 ![Testing](https://img.shields.io/badge/Test-Unity_Framework-red)
 
 </div>
@@ -17,7 +17,7 @@
 ├── docs/
 ├── include/           # Arquivos de cabeçalho (.h)
 ├── src/               # Implementações (.c) e Makefile
-├── testes/            # Arquivos de comando (.geo, .qry e .via)
+├── testes/            # Arquivos de comando (.geo, .qry e .pm)
 ├── unit_test/         # Suítes de testes unitários (t_*.c)
 ├── unity/             # Framework Unity para testes em C
 └── README.md          # Documentação do repositório
