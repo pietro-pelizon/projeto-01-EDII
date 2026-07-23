@@ -51,19 +51,21 @@ O projeto inclui um `Makefile` na pasta `src` para facilitar a compilação do e
 
 ```bash
 cd src && make
-
 ```
 
-* Para limpar os arquivos objeto e binários gerados:
+## Testes Unitários (Unity Framework)
+Para garantir a integridade de cada **TAD** (Tipo Abstrato de Dado) e módulo funcional, o projeto utiliza o framework **Unity**.
 
+Os arquivos de teste estão localizados na pasta `unit_test/` com o prefixo `t_*.c`. O `Makefile` está configurado para compilar e executar isoladamente cada suíte de testes.
+
+- Para rodar um teste específico, de dentro da pasta `src/`, utilize o prefixo `t_` seguido do nome do módulo. Por exemplo:
 ```bash
+make t_habitante
+```
+
+- Para limpar os binários gerados pela compilação e testes:
+```Bash
 make clean
-
-```
-
-Dentro da pasta `src`, pode se compilar/rodar os testes unitários feitos com o Unity, utilizando: 
-```bash
- make t_<nome_do_módulo>
 ```
 
 ## Como Executar
