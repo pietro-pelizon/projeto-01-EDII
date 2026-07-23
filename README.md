@@ -83,6 +83,19 @@ A execução do programa segue o padrão de passagem de argumentos via CLI para 
 ```bash
 ./ted -e [dir_entrada] -f [arq.geo] -pm [arq.pm] -o [dir_saida] -q [arq.qry]
 ```
+**Automação da execução:**
+
+Pode se utilizar o script `(.sh)` provido no repositório para executar todos os testes de uma vez.
+
+O seguinte comando deve ser executado após a compilação:
+
+```bash
+chmod +x run.sh && ./run.sh
+```
+
+Isso retira o processo de citar arquivo por arquivo corretamente. O único pré-requisito é que a pasta `testes` esteja presente na raiz do projeto, contendo todos os arquivos `(.geo), (.qry) e (.pm)`.
+
+
 
 **Parâmetros:**
 
