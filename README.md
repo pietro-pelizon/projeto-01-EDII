@@ -35,9 +35,9 @@ O desenvolvimento inclui uma forte base de testes automatizados, utilizando o fr
 * **Hash Extensível:** Implementação da estrutura de dados para indexação e busca eficiente de registros utilizando chaves, suportando expansão dinâmica de diretório.
 * **Gestão Urbana:** Manipulação e consulta de dados referentes a `Quadras` e `Habitantes`.
 * **Processamento de Arquivos Multiextensão:**
-* `.geo`: Configuração inicial do ambiente geográfico (ex: quadras e formas básicas).
-* `.qry`: Consultas e operações dinâmicas no mapa.
-* `.pm`: Arquivos de povoamento e dados de habitantes.
+  * `.geo`: Configuração inicial do ambiente geográfico (ex: quadras e formas básicas).
+  * `.qry`: Consultas e operações dinâmicas no mapa.
+  * `.pm`: Arquivos de povoamento e dados de habitantes.
 
 
 * **Geração Gráfica:** Exportação visual do estado do mapa e resultados das consultas em formato `.svg`.
