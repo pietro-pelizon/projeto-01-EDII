@@ -43,6 +43,12 @@ O desenvolvimento inclui uma forte base de testes automatizados, utilizando o fr
 * **Geração Gráfica:** Exportação visual do estado do mapa e resultados das consultas em formato `.svg`.
 * **Testes Unitários:** Ampla cobertura de testes para os módulos principais (TDD) através do diretório `unit_test/`.
 
+## Pré-requisitos
+Certifique-se de ter as seguintes ferramentas instaladas no seu ambiente:
+* Compilador **GCC** (com suporte ao padrão C99)
+* **Make** (para automação da build)
+* Ambiente **Linux** ou **WSL** (Windows Subsystem for Linux)
+
 ## Compilação
 
 O projeto inclui um `Makefile` na pasta `src` para facilitar a compilação do executável principal e das suítes de teste.
