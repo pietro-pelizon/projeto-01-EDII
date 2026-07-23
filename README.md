@@ -26,7 +26,7 @@
 
 ## Sobre o Projeto
 
-Este projeto desenvolve um Sistema de Informação Geográfica (SIG) simulado, focado na implementação e uso de um **Hash Extensível (Extendible Hashing)**. O sistema gerencia entidades urbanas, como **Quadras** e **Habitantes**, processando dados de entrada e gerando saídas visuais vetoriais e relatórios textuais.
+Este projeto desenvolve um Sistema de Informações Geográfica (SIG) simulado, focado na implementação e uso de um **Hash Extensível (Extendible Hashing)**. O sistema gerencia entidades urbanas, como **Quadras** e **Habitantes**, processando dados de entrada e gerando saídas visuais vetoriais e relatórios textuais.
 
 O desenvolvimento inclui uma forte base de testes automatizados, utilizando o framework **Unity** para garantir a integridade das estruturas de dados e dos módulos interpretadores (parsers).
 
@@ -86,6 +86,35 @@ A execução do programa segue o padrão de passagem de argumentos via CLI para 
 | `-o saida`     | Sim              | Diretório-base de saída onde os arquivos `.svg` e `.txt` serão gravados.   |
 | `-q arq.qry`   | Não              | Arquivo de consultas e processamento do sistema.                           |
 | `-h \| --help` | Não              | Exibe uma mensagem com as informações necessárias para executar o programa | 
+
+## Estrutura dos Arquivos de Entrada
+
+### Arquivo (`.geo`)
+
+Define a aparência, tamanho e localização das quadras da cidade.
+
+| **Comando** | **Parâmetros**          | **Descrição**                                                                                      |
+|-------------|-------------------------|----------------------------------------------------------------------------------------------------|
+| `q`         | `cep x y w h`           | Insere uma quadra com os atributos especificados.                                                  |
+| `cq`        | `sw cor_fill cor_borda` | Define a cor de preenchimento, a espessura e cor da borda das quadras subsequentes a esse comando. |
+
+### Arquivo (`.pm`)
+| **Comando** | **Parâmetros**                 | **Descrição                                                                                                                           |
+|-------------|--------------------------------|---------------------------------------------------------------------------------------------------------------------------------------|
+| `p`         | `cpf nome sobrenome sexo nasc` | Insere habitante identificado por cpf, nomeado (`nome, sobrenome`), de um certo sexo (`M \|F`), nascido numa determinada data (`dd/mm/aaaa`) |
+| `m`         | `cpf cep face num compl`       | Informa que um dado habitante identificado por `cpf` mora num dado endereço, composto por: `cep, face, num, compl`                    |
+
+### Arquivo (`.qry`)
+| **Comando** | **Parâmetros**                 | **Descrição**                                                                              |
+|-------------|--------------------------------|--------------------------------------------------------------------------------------------|
+| `rq`        | `cep`                          | Remove quadra identificada por `cep`.                                                      |
+| `pq`        | `cep`                          | Obtém o número de moradores que moram na quadra identificada por `cep` (total e por face). |
+| `censo`     | `-`                            | Produz diversas estatísticas sobre os habitantes da cidade.                                |
+| `h?`        | `cpf`                          | Obtém os dados do habitante identificado por `cpf`.                                        |
+| `nasc`      | `cpf nome sobrenome sexo nasc` | Ocorre o nascimento de uma pessoa na cidade. (Olhar comando `p` do arquivo (`pm`)          |
+| `rip`       | `cpf`                          | Morre pessoa identificada por `cpf`.                                                       |
+| `mud`       | `cpf cep face num compl`       | Morador identificado por `cpf` se muda para novo endereço (`cep, face, num compl`).        |
+| `dspj`      | `cpf`                          | Morador identificado por `cpf` é despejado.                                                | 
 
 ## Estrutura do Código (Módulos)
 
